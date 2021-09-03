@@ -20,6 +20,8 @@ const { startPolyglot } = require("./src/utils/polyglot");
 
 const app = express();
 
+const usersRouter = require("./src/routes/users");
+
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   integrations: [
@@ -85,6 +87,8 @@ app.use(function (req, res, next) {
     next();
   }
 });
+
+app.use("/api/users", usersRouter);
 
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");

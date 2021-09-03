@@ -1,7 +1,17 @@
 "use strict";
 const BaseModel = require("./base");
+const bcrypt = require("bcrypt");
+const { Op, Sequelize } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
+    PROTECTED_ATTRIBUTES = [
+      "id",
+      "createdAt",
+      "updatedAt",
+      "deletedAt",
+      "password",
+    ];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -31,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "profilePicture",
       });
 
-      this.hasMany(models.Advertisment, {
+      this.hasMany(models.Advertisement, {
         as: "advertisements",
         foreignKey: "userId",
       });
@@ -45,7 +55,18 @@ module.exports = (sequelize, DataTypes) => {
       code: DataTypes.STRING,
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
-      email: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        validate: {
+          async isUnique(value) {
+            const count = await sequelize.models.User.count({
+              where: { email: value },
+            });
+
+            if (count !== 0) throw new Error("Email must be unique");
+          },
+        },
+      },
       password: DataTypes.STRING,
       mobile: DataTypes.STRING,
       whatsApp: DataTypes.STRING,
@@ -58,6 +79,18 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
       paranoid: true,
       underscored: true,
+      hooks: {
+        beforeCreate: async (user, options) => {
+          if (user && options) {
+            const { code, password } = options;
+
+            if (code) user.setDataValue("code", code);
+            if (password)
+              user.setDataValue("password", bcrypt.hashSync(password, 12));
+          }
+          return user;
+        },
+      },
     }
   );
   return User;
