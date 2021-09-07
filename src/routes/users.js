@@ -1,15 +1,19 @@
 const express = require("express");
 const {
-  getAllUsers,
   getUserByCode,
   updateUserByCode,
   deleteUsers,
   createUser,
+  searchUsers,
 } = require("../controllers/users");
+const {
+  processValidationError,
+} = require("../utils/process-validation-errors");
+const { usersValidator } = require("../validators/users");
 const router = express.Router();
 
-router.post("/", createUser);
-router.get("/", getAllUsers);
+router.post("/", usersValidator("create"), processValidationError, createUser);
+router.post("/search", searchUsers);
 router.get("/:code", getUserByCode);
 router.patch("/:code", updateUserByCode);
 router.delete("/", deleteUsers);

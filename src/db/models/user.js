@@ -22,24 +22,22 @@ module.exports = (sequelize, DataTypes) => {
 
       this.hasMany(models.Car, { as: "cars", foreignKey: "userId" });
       this.belongsToMany(models.Role, {
+        as: "roles",
         through: {
           model: models.UserRole,
           foreignKey: "userId",
-          as: "roles",
         },
       });
 
       this.belongsToMany(models.Event, {
+        as: "events",
         through: {
           model: models.UserEvent,
           foreignKey: "userId",
-          as: "events",
         },
       });
 
-      this.hasOne(models.File, {
-        as: "profilePicture",
-      });
+      this.hasOne(models.File, { as: "profilePicture", foreignKey: "id" });
 
       this.hasMany(models.Advertisement, {
         as: "advertisements",
@@ -55,30 +53,35 @@ module.exports = (sequelize, DataTypes) => {
       code: DataTypes.STRING,
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
-      email: {
-        type: DataTypes.STRING,
-        validate: {
-          async isUnique(value) {
-            const count = await sequelize.models.User.count({
-              where: { email: value },
-            });
-
-            if (count !== 0) throw new Error("Email must be unique");
-          },
-        },
-      },
+      email: DataTypes.STRING,
       password: DataTypes.STRING,
       mobile: DataTypes.STRING,
       whatsApp: DataTypes.STRING,
       points: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
-      fileId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "User",
       paranoid: true,
       underscored: true,
+      scopes: {
+        full: {
+          include: ["roles", "cars", "events", "profilePicture"],
+        },
+        roles: {
+          include: ["roles"],
+        },
+        cars: {
+          include: ["cars"],
+        },
+        events: {
+          include: ["events"],
+        },
+        profilePicture: {
+          include: ["profilePicture"],
+        },
+      },
       hooks: {
         beforeCreate: async (user, options) => {
           if (user && options) {

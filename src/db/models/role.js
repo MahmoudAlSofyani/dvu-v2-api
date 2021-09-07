@@ -2,6 +2,7 @@
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class Role extends BaseModel {
+    PROTECTED_ATTRIBUTES = ["id", "UserRole"];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.

@@ -2,13 +2,13 @@
 // bulk update user
 
 const { User } = require("../db/models");
-const { generateResponse, generateCode } = require("../helpers");
+const { generateResponse, generateCode, isUniqueUser } = require("../helpers");
 const { Op } = require("sequelize");
 
 exports.createUser = async (req, res, next) => {
   try {
     const code = await generateCode("User");
-    const { password, email, mobile } = req.body;
+    const { password, email, mobile, whatsApp } = req.body;
 
     const options = {
       code,
@@ -17,22 +17,65 @@ exports.createUser = async (req, res, next) => {
       mobile,
     };
 
-    const _user = await User.create({ ...req.body }, options);
-
-    res.status(200).send(_user);
+    if (await isUniqueUser(email, mobile, whatsApp)) {
+      const _user = await User.create({ ...req.body }, options);
+      return res.status(200).send(_user);
+    } else generateResponse(null, req, next, 400, "validations.user.notUnique");
   } catch (err) {
-    if (err.errors) {
-      const { errors } = err;
-      generateResponse(err, req, next, 400, "Email or Mobile not unique");
-    }
+    generateResponse(err, req, next);
   }
 };
 
-exports.getAllUsers = async (req, res, next) => {
+exports.searchUsers = async (req, res, next) => {
   try {
-    const _users = await User.findAll();
+    const { filters, limit, scopes } = req.body;
+    let whereClause = [];
+    let searchClause = null;
 
-    res.status(200).send(_users);
+    if (filters) {
+      for (const [key, value] of Object.entries(filters)) {
+        if (value && value.length > 0) {
+          switch (key) {
+            case "search":
+              searchClause = {
+                [Op.or]: [
+                  {
+                    code: { [Op.like]: `%${value}%` },
+                  },
+                  {
+                    firstName: { [Op.like]: `%${value}%` },
+                  },
+                  {
+                    lastName: { [Op.like]: `%${value}%` },
+                  },
+                  {
+                    email: { [Op.like]: `%${value}%` },
+                  },
+                  {
+                    mobile: { [Op.like]: `%${value}%` },
+                  },
+                  {
+                    whatsApp: { [Op.like]: `%${value}%` },
+                  },
+                ],
+              };
+              break;
+          }
+        }
+      }
+    }
+
+    const whereObj =
+      searchClause === null
+        ? Object.assign({}, whereClause)
+        : { ...Object.assign({}, whereClause), ...searchClause };
+
+    User.scope(scopes)
+      .findAll({ where: whereObj, limit })
+      .then((_users) => {
+        res.status(200).send(_users);
+      })
+      .catch((err) => generateResponse(err, req, next));
   } catch (err) {
     generateResponse(err, req, next);
   }
@@ -42,10 +85,17 @@ exports.getUserByCode = async (req, res, next) => {
   try {
     const { code } = req.params;
 
-    const _user = await User.findOne({ where: { code } });
+    const _user = await User.scope("full").findOne({ where: { code } });
 
     if (_user) return res.status(200).send(_user);
-    else return generateResponse(null, req, next, 404, "User not found");
+    else
+      return generateResponse(
+        null,
+        req,
+        next,
+        404,
+        "validations.user.notFound"
+      );
   } catch (err) {
     generateResponse(err, req, next);
   }
@@ -63,7 +113,7 @@ exports.updateUserByCode = async (req, res, next) => {
       }
       await _user.save();
       return res.status(200).send(_user);
-    } else generateResponse(null, req, next, 404, "user not found");
+    } else generateResponse(null, req, next, 404, "validations.user.notFound");
   } catch (err) {
     generateResponse(err, req, next);
   }
