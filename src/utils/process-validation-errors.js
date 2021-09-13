@@ -1,5 +1,7 @@
 const { validationResult } = require("express-validator");
 const fromEntries = require("object.fromentries");
+const fs = require("fs");
+const { generateResponse } = require("../helpers");
 
 const translateMessages = (errObj, req) => {
   // Convert the errObj to an Array
@@ -23,6 +25,20 @@ exports.processValidationError = (req, res, next) => {
 
   // If there were errors in the validation
   if (!validationErrors.isEmpty()) {
+    //delete the files if any was uploaded
+    if (req.file) {
+      fs.unlink(`uploads/${req.file.filename}`, (err) => {
+        if (err) generateResponse(err, req, next);
+      });
+    }
+
+    if (req.files) {
+      req.files.forEach((_file) => {
+        fs.unlink(`uploads/${_file.filename}`, (err) => {
+          if (err) generateResponse(err, req, next);
+        });
+      });
+    }
     // generate validation response
     res.status(400).send({
       data: translateMessages(validationErrors.mapped(), req),

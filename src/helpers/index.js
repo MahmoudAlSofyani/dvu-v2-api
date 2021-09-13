@@ -1,6 +1,7 @@
-const { User, Car } = require("../db/models");
+const { User, Car, Sponsor } = require("../db/models");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
+const fs = require("fs");
 
 exports.generateCode = async (moduleName, length) => {
   let code;
@@ -20,6 +21,14 @@ exports.generateCode = async (moduleName, length) => {
       do {
         code = prefix + uuidv4();
         count = await Car.count({ where: { code } });
+      } while (count > 0);
+      return code.split("-")[0];
+    }
+    case "Sponsor": {
+      const prefix = "SPONSOR_";
+      do {
+        code = prefix + uuidv4();
+        count = await Sponsor.count({ where: { code } });
       } while (count > 0);
       return code.split("-")[0];
     }
@@ -81,4 +90,26 @@ exports.getToken = (req, next) => {
 exports.isActiveAccount = (user) => {
   if (user.isActive) return true;
   else return false;
+};
+
+exports.generateUrlSlug = (title, req, next) => {
+  try {
+    let titleUrl = title
+      .toLowerCase()
+      .replace(/[^\w ]+/g, "")
+      .replace(/ +/g, "-");
+
+    return titleUrl;
+  } catch (err) {
+    this.generateError(err, req, next, null, "general.errorSlug");
+  }
+};
+
+exports.allowedImages = function (req, file, cb) {
+  // Accept images only
+  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+    req.fileValidationError = "Only image files are allowed!";
+    return cb(new Error("Only image files are allowed!"), false);
+  }
+  cb(null, true);
 };

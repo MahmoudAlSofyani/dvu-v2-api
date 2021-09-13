@@ -14,6 +14,12 @@ exports.en = {
       email: "Email required",
       password: "Password required",
     },
+    sponsor: {
+      name: "Name required",
+      description: "Description required",
+      logo: "Logo required",
+      notFound: "Sponsor not found",
+    },
   },
   general: {
     denied: "Permission denied",
@@ -27,5 +33,6 @@ exports.en = {
     notActive: "Your account is not activated yet",
     code: "Code is required",
     codes: "Atleast one code is required",
+    fileUploadError: "You must upload an image",
   },
 };
