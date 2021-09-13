@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       code: DataTypes.STRING,
       details: DataTypes.TEXT,
-      postId: DataTypes.INTEGER,
     },
     {
       sequelize,

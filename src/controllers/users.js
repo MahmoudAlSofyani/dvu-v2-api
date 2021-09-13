@@ -28,7 +28,7 @@ exports.createUser = async (req, res, next) => {
 
 exports.searchUsers = async (req, res, next) => {
   try {
-    const { filters, limit, scopes } = req.body;
+    const { filters, limit } = req.body;
     let whereClause = [];
     let searchClause = null;
 
@@ -70,7 +70,7 @@ exports.searchUsers = async (req, res, next) => {
         ? Object.assign({}, whereClause)
         : { ...Object.assign({}, whereClause), ...searchClause };
 
-    User.scope(scopes)
+    User.scope("full")
       .findAll({ where: whereObj, limit })
       .then((_users) => {
         res.status(200).send(_users);
@@ -119,22 +119,40 @@ exports.updateUserByCode = async (req, res, next) => {
   }
 };
 
-// TODO: Bulk update users - isActive & Role
+exports.bulkUpdateUsersStatus = async (req, res, next) => {
+  try {
+    const { codes, isActive } = req.body;
+
+    const _count = await User.update(
+      { isActive },
+      {
+        where: {
+          code: {
+            [Op.in]: codes,
+          },
+        },
+        returning: true,
+      }
+    );
+
+    res.status(200).send({ count: _count });
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
 
 exports.deleteUsers = async (req, res, next) => {
   try {
     const { codes } = req.body;
 
-    const _users = await User.findAll({
-      where: { code: { [Op.in]: codes } },
+    const _count = await User.destroy({
+      where: {
+        code: {
+          [Op.in]: codes,
+        },
+      },
     });
-
-    if (_users.length > 0) {
-      for (const _user of _users) {
-        await _user.destroy();
-      }
-    }
-    res.status(200).send({ count: _users.length });
+    res.status(200).send({ count: _count });
   } catch (err) {
     generateResponse(err, req, next);
   }

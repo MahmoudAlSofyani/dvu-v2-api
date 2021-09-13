@@ -10,6 +10,10 @@ exports.en = {
       notFound: "User not found",
       notUnique: "User already exists",
     },
+    auth: {
+      email: "Email required",
+      password: "Password required",
+    },
   },
   general: {
     denied: "Permission denied",
@@ -20,5 +24,8 @@ exports.en = {
     notArray: "Must be an array",
     notEmail: "Invalid email",
     empty: "Empty value is not allowed",
+    notActive: "Your account is not activated yet",
+    code: "Code is required",
+    codes: "Atleast one code is required",
   },
 };

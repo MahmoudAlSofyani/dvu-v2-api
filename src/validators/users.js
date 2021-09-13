@@ -9,52 +9,72 @@ exports.usersValidator = (action) => {
           .withMessage("validations.user.firstName")
           .not()
           .isEmpty()
-          .withMessage("general.empty")
-          .isString()
-          .withMessage("general.notString"),
+          .isString(),
         check("lastName")
           .exists()
           .withMessage("validations.user.lastName")
           .not()
           .isEmpty()
-          .withMessage("general.empty")
-          .isString()
-          .withMessage("general.notString"),
+          .isString(),
         check("email")
           .exists()
           .withMessage("validations.user.email")
           .not()
           .isEmpty()
-          .withMessage("general.empty")
           .isString()
-          .withMessage("general.notString")
-          .isEmail()
-          .withMessage("general.invalidEmail"),
+          .isEmail(),
         check("password")
           .exists()
           .withMessage("validations.user.password")
           .not()
           .isEmpty()
-          .withMessage("general.empty")
-          .isString()
-          .withMessage("general.notString"),
+          .isString(),
         check("mobile")
           .exists()
           .withMessage("validations.user.mobile")
           .not()
           .isEmpty()
-          .withMessage("general.empty")
-          .isString()
-          .withMessage("general.notString"),
+          .isString(),
         check("whatsApp")
           .exists()
           .withMessage("validations.user.whatsApp")
           .not()
           .isEmpty()
-          .withMessage("general.empty")
           .isString()
-          .withMessage("general.notString")
           .optional(),
+      ];
+    case "bulk-update-status":
+      return [
+        check("codes")
+          .exists()
+          .withMessage("general.codes")
+          .not()
+          .isEmpty()
+          .isArray(),
+        check("isActive")
+          .exists()
+          .withMessage("validations.user.isActive")
+          .not()
+          .isEmpty()
+          .isBoolean(),
+      ];
+    case "update":
+      return [
+        check("code")
+          .exists()
+          .withMessage("general.code")
+          .not()
+          .isEmpty()
+          .isString(),
+      ];
+    case "bulk-delete":
+      return [
+        check("codes")
+          .exists()
+          .withMessage("general.codes")
+          .not()
+          .isEmpty()
+          .isArray(),
       ];
   }
 };

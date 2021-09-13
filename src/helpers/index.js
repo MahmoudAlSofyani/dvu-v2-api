@@ -1,4 +1,4 @@
-const { User } = require("../db/models");
+const { User, Car } = require("../db/models");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 
@@ -12,6 +12,14 @@ exports.generateCode = async (moduleName, length) => {
       do {
         code = prefix + uuidv4();
         count = await User.count({ where: { code } });
+      } while (count > 0);
+      return code.split("-")[0];
+    }
+    case "Car": {
+      const prefix = "CAR_";
+      do {
+        code = prefix + uuidv4();
+        count = await Car.count({ where: { code } });
       } while (count > 0);
       return code.split("-")[0];
     }
@@ -68,4 +76,9 @@ exports.getToken = (req, next) => {
   } catch (err) {
     this.generateError(err, req, next);
   }
+};
+
+exports.isActiveAccount = (user) => {
+  if (user.isActive) return true;
+  else return false;
 };
