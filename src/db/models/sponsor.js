@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasOne(models.File, {
-        as: "logo",
-      });
+      // this.hasOne(models.File, {
+      //   as: "logo",
+      // });
     }
   }
   Sponsor.init(

@@ -2,6 +2,13 @@
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class Car extends BaseModel {
+    PROTECTED_ATTRIBUTES = [
+      "id",
+      "createdAt",
+      "updatedAt",
+      "deletedAt",
+      "userId",
+    ];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User);
+      this.belongsTo(models.User, { foreignKey: "userId" });
     }
   }
   Car.init(
@@ -21,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       plateCode: DataTypes.STRING,
       plateNumber: DataTypes.STRING,
       plateSource: DataTypes.STRING,
-      userId: DataTypes.INTEGER,
     },
     {
       sequelize,

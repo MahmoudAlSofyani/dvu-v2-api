@@ -9,15 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(model.Post);
-      this.belongsTo(model.User);
+      this.belongsTo(models.Post);
+      this.belongsTo(models.User);
     }
   }
   Comment.init(
     {
       code: DataTypes.STRING,
       details: DataTypes.TEXT,
-      postId: DataTypes.INTEGER,
     },
     {
       sequelize,

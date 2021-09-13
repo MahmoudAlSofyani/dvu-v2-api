@@ -1,37 +1,42 @@
 "use strict";
 const BaseModel = require("./base");
+const bcrypt = require("bcrypt");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+    PROTECTED_ATTRIBUTES = [
+      "id",
+      "createdAt",
+      "updatedAt",
+      "deletedAt",
+      "password",
+      "fileId",
+    ];
 
+    static associate(models) {
       this.hasMany(models.Car, { as: "cars", foreignKey: "userId" });
       this.belongsToMany(models.Role, {
+        as: "roles",
         through: {
           model: models.UserRole,
           foreignKey: "userId",
-          as: "roles",
         },
       });
 
       this.belongsToMany(models.Event, {
+        as: "events",
         through: {
           model: models.UserEvent,
           foreignKey: "userId",
-          as: "events",
         },
       });
 
-      this.hasOne(models.File, {
+      this.belongsTo(models.File, {
         as: "profilePicture",
+        foreignKey: "fileId",
       });
 
-      this.hasMany(models.Advertisment, {
+      this.hasMany(models.Advertisement, {
         as: "advertisements",
         foreignKey: "userId",
       });
@@ -51,13 +56,60 @@ module.exports = (sequelize, DataTypes) => {
       whatsApp: DataTypes.STRING,
       points: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
-      fileId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "User",
       paranoid: true,
       underscored: true,
+      scopes: {
+        full: {
+          include: [
+            "roles",
+            "cars",
+            "events",
+            "profilePicture",
+            "advertisements",
+          ],
+        },
+        roles: {
+          include: ["roles"],
+        },
+        cars: {
+          include: ["cars"],
+        },
+        events: {
+          include: ["events"],
+        },
+        profilePicture: {
+          include: ["profilePicture"],
+        },
+        advertisements: {
+          include: ["advertisements"],
+        },
+      },
+      hooks: {
+        afterCreate: async (user, options) => {
+          if (user && options) {
+            const { userCode, password, car, carCode } = options;
+
+            if (userCode) user.setDataValue("code", userCode);
+            if (password)
+              user.setDataValue("password", bcrypt.hashSync(password, 12));
+
+            if (car) {
+              const _car = await sequelize.models.Car.create({
+                code: carCode,
+                userId: user.id,
+                ...car,
+              });
+
+              if (car) await user.addCar(_car);
+            }
+          }
+          return user;
+        },
+      },
     }
   );
   return User;
