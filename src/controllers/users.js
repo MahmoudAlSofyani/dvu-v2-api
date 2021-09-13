@@ -1,6 +1,3 @@
-// Create user
-// bulk update user
-
 const { User } = require("../db/models");
 const { generateResponse, generateCode, isUniqueUser } = require("../helpers");
 const { Op } = require("sequelize");

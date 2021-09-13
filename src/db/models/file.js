@@ -2,6 +2,7 @@
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class File extends BaseModel {
+    PROTECTED_ATTRIBUTES = ["id", "createdAt", "updatedAt", "deletedAt"];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       this.hasOne(models.User, { foreignKey: "fileId" });
-      // this.belongsTo(models.Sponsor);
+      this.hasOne(models.Sponsor, { foreignKey: "fileId" });
     }
   }
   File.init(

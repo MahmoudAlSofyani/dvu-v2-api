@@ -1,17 +1,14 @@
 "use strict";
+const { deleteFile } = require("../../helpers/delete-file");
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class Sponsor extends BaseModel {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+    PROTECTED_ATTRIBUTES = ["id", "createdAt", "updatedAt", "fileId"];
     static associate(models) {
-      // define association here
-      // this.hasOne(models.File, {
-      //   as: "logo",
-      // });
+      this.belongsTo(models.File, {
+        as: "logo",
+        foreignKey: "fileId",
+      });
     }
   }
   Sponsor.init(
@@ -26,6 +23,56 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Sponsor",
       paranoid: true,
       underscored: true,
+      scopes: {
+        full: {
+          include: ["logo"],
+        },
+        logo: {
+          include: ["logo"],
+        },
+      },
+      hooks: {
+        beforeCreate: async (sponsor, options) => {
+          if (sponsor && options) {
+            const { logo } = options;
+
+            if (logo) {
+              const _logo = await sequelize.models.File.create({
+                code: logo.filename,
+                name: logo.originalname,
+                type: logo.mimetype,
+                size: logo.size,
+              });
+
+              if (_logo) sponsor.setDataValue("fileId", _logo.id);
+            }
+          }
+
+          return sponsor;
+        },
+        beforeUpdate: async (sponsor, options) => {
+          if (sponsor && options) {
+            const { logo } = options;
+
+            if (logo) {
+              const _oldLogo = await sponsor.getLogo();
+
+              deleteFile(_oldLogo.code);
+              await _oldLogo.destroy();
+
+              const _newLogo = await sequelize.models.File.create({
+                code: logo.filename,
+                name: logo.originalname,
+                type: logo.mimetype,
+                size: logo.size,
+              });
+
+              if (_newLogo) sponsor.setDataValue("fileId", _newLogo.id);
+            }
+          }
+          return sponsor;
+        },
+      },
     }
   );
   return Sponsor;
