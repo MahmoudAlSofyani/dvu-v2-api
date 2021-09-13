@@ -1,7 +1,6 @@
 "use strict";
 const BaseModel = require("./base");
 const bcrypt = require("bcrypt");
-const { Op, Sequelize } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
@@ -11,15 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       "updatedAt",
       "deletedAt",
       "password",
+      "fileId",
     ];
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
 
+    static associate(models) {
       this.hasMany(models.Car, { as: "cars", foreignKey: "userId" });
       this.belongsToMany(models.Role, {
         as: "roles",
@@ -37,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      this.hasOne(models.File, { as: "profilePicture", foreignKey: "id" });
+      this.belongsTo(models.File, {
+        as: "profilePicture",
+        foreignKey: "fileId",
+      });
 
       this.hasMany(models.Advertisement, {
         as: "advertisements",
@@ -67,7 +64,13 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
       scopes: {
         full: {
-          include: ["roles", "cars", "events", "profilePicture"],
+          include: [
+            "roles",
+            "cars",
+            "events",
+            "profilePicture",
+            "advertisements",
+          ],
         },
         roles: {
           include: ["roles"],
@@ -81,15 +84,28 @@ module.exports = (sequelize, DataTypes) => {
         profilePicture: {
           include: ["profilePicture"],
         },
+        advertisements: {
+          include: ["advertisements"],
+        },
       },
       hooks: {
-        beforeCreate: async (user, options) => {
+        afterCreate: async (user, options) => {
           if (user && options) {
-            const { code, password } = options;
+            const { userCode, password, car, carCode } = options;
 
-            if (code) user.setDataValue("code", code);
+            if (userCode) user.setDataValue("code", userCode);
             if (password)
               user.setDataValue("password", bcrypt.hashSync(password, 12));
+
+            if (car) {
+              const _car = await sequelize.models.Car.create({
+                code: carCode,
+                userId: user.id,
+                ...car,
+              });
+
+              if (car) await user.addCar(_car);
+            }
           }
           return user;
         },
