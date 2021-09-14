@@ -21,10 +21,19 @@ exports.sponsorsValidator = (action) => {
       return [
         param("code")
           .exists()
-          .withMessage("validations.sponsor.code")
+          .withMessage("general.code")
           .not()
           .isEmpty()
           .isString(),
+      ];
+    case "delete":
+      return [
+        check("codes")
+          .exists()
+          .withMessage("general.codes")
+          .not()
+          .isEmpty()
+          .isArray(),
       ];
   }
 };

@@ -4,6 +4,7 @@ const {
   searchSponsors,
   createSponsor,
   updateSponsorByCode,
+  deleteSponsors,
 } = require("../controllers/sponsors");
 const router = express.Router();
 const { verifyAdminToken } = require("../middlewares/index");
@@ -28,6 +29,14 @@ router.patch(
   sponsorsValidator("update"),
   processValidationError,
   updateSponsorByCode
+);
+
+router.delete(
+  "/",
+  verifyAdminToken,
+  sponsorsValidator("delete"),
+  processValidationError,
+  deleteSponsors
 );
 
 module.exports = router;

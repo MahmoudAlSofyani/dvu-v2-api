@@ -100,3 +100,20 @@ exports.updateSponsorByCode = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
+
+exports.deleteSponsors = async (req, res, next) => {
+  try {
+    const { codes } = req.body;
+
+    const _count = await Sponsor.destroy({
+      where: {
+        code: {
+          [Op.in]: codes,
+        },
+      },
+    });
+    res.status(200).send({ count: _count });
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
