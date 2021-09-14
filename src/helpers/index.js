@@ -1,4 +1,4 @@
-const { User, Car, Sponsor } = require("../db/models");
+const { User, Car, Sponsor, Event } = require("../db/models");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 const fs = require("fs");
@@ -26,6 +26,14 @@ exports.generateCode = async (moduleName, length) => {
     }
     case "Sponsor": {
       const prefix = "SPONSOR_";
+      do {
+        code = prefix + uuidv4();
+        count = await Sponsor.count({ where: { code } });
+      } while (count > 0);
+      return code.split("-")[0];
+    }
+    case "Event": {
+      const prefix = "EVENT_";
       do {
         code = prefix + uuidv4();
         count = await Sponsor.count({ where: { code } });

@@ -21,11 +21,15 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      meeting_point: {
+      meeting_location: {
         type: Sequelize.GEOMETRY,
         allowNull: false,
       },
-      meeting_date: {
+      meeting_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      meeting_time: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
@@ -38,6 +42,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true,
+      },
+      url: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       created_at: {
         allowNull: false,
