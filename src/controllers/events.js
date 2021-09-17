@@ -76,7 +76,7 @@ exports.updateEventByCode = async (req, res, next) => {
 
     const [count, [_updatedEvent]] = await Event.update(
       { ...req.body },
-      { where: { code } }
+      { individualHooks: true, where: { code } }
     );
 
     if (_updatedEvent) {
