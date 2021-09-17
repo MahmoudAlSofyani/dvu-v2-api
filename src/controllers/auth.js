@@ -42,20 +42,20 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res, next) => {
   try {
-    const userCode = await generateCode("User");
-    const carCode = await generateCode("Car");
-    const { password, email, mobile, whatsApp, car } = req.body;
+    const code = generateCode(req, next, "user");
+    const { password, email, mobile, whatsApp, cars } = req.body;
+    const carCodes = cars.map((_car) => generateCode(req, next, "car"));
 
     const options = {
-      carCode,
       password,
       email,
       mobile,
-      car,
+      cars,
+      carCodes,
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
-      const _user = await User.create({ code: userCode, ...req.body }, options);
+      const _user = await User.create({ code, ...req.body }, options);
       return res.status(200).send(_user);
     } else generateResponse(null, req, next, 400, "validations.user.notUnique");
   } catch (err) {

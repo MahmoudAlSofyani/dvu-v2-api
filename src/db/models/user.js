@@ -91,20 +91,19 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         afterCreate: async (user, options) => {
           if (user && options) {
-            const { userCode, password, car, carCode } = options;
+            const { password, cars, carCodes } = options;
 
-            if (userCode) user.setDataValue("code", userCode);
             if (password)
               user.setDataValue("password", bcrypt.hashSync(password, 12));
 
-            if (car) {
-              const _car = await sequelize.models.Car.create({
-                code: carCode,
-                userId: user.id,
-                ...car,
-              });
-
-              if (car) await user.addCar(_car);
+            if (cars && cars.length > 0) {
+              await sequelize.models.Car.bulkCreate(
+                cars.map((_car, index) => ({
+                  code: carCodes[index],
+                  userId: user.id,
+                  ..._car,
+                }))
+              );
             }
           }
           return user;

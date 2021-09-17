@@ -65,7 +65,7 @@ exports.createSponsor = async (req, res, next) => {
 
     const _sponsor = await Sponsor.create(
       {
-        code: await generateCode("Sponsor"),
+        code: await generateCode(req, next, "sponsor"),
         url: generateUrlSlug(name),
         ...req.body,
       },

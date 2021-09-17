@@ -60,7 +60,7 @@ exports.createEvent = async (req, res, next) => {
     const { name, meetingLocation } = req.body;
 
     const _event = await Event.create({
-      code: await generateCode("Event"),
+      code: await generateCode(req, next, "event"),
       url: generateUrlSlug(name),
       ...req.body,
     });
@@ -99,6 +99,31 @@ exports.deleteEvents = async (req, res, next) => {
       },
     });
     res.status(200).send({ count: _count });
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.handleMemberRegisterToEvent = async (req, res, next) => {
+  try {
+    const { user } = req;
+    const { code } = req.body;
+
+    const _event = await Event.findOne({ where: { code } });
+
+    if (_event) {
+      if (await _event.hasMember(user)) {
+        await _event.removeMember(user);
+        return res
+          .status(200)
+          .send({ msg: "You have successfully unregistered for this event" });
+      } else {
+        await _event.addMember(user);
+        return res
+          .status(200)
+          .send({ msg: "You have successfully registered for this event" });
+      }
+    } else generateResponse(null, req, next, 400, "validations.event.notFound");
   } catch (err) {
     generateResponse(err, req, next);
   }

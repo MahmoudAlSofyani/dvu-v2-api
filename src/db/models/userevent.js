@@ -2,6 +2,13 @@
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class UserEvent extends BaseModel {
+    PROTECTED_ATTRIBUTES = [
+      "userId",
+      "eventId",
+      "createdAt",
+      "EventId",
+      "UserId",
+    ];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.User, { foreignKey: "userId" });
+      this.belongsTo(models.Event, { foreignKey: "eventId" });
     }
   }
   UserEvent.init(
@@ -22,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "UserEvent",
       paranoid: true,
       underscored: true,
+      timestamps: false,
     }
   );
   return UserEvent;

@@ -1,45 +1,64 @@
 const { User, Car, Sponsor, Event } = require("../db/models");
-const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
-const fs = require("fs");
 
-exports.generateCode = async (moduleName, length) => {
-  let code;
-  let count = 0;
+exports.generateCode = (req, next, moduleName) => {
+  try {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    let code = "";
 
-  switch (moduleName) {
-    case "User": {
-      const prefix = "USER_";
-      do {
-        code = prefix + uuidv4();
-        count = await User.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
+    switch (moduleName) {
+      case "user":
+        code = "user_";
+        break;
+      case "car":
+        code = "car_";
+        break;
+      case "sponsor":
+        code = "sponsor_";
+        break;
+      case "event":
+        code = "event_";
+        break;
+      default:
+        code = "code_";
+        break;
     }
-    case "Car": {
-      const prefix = "CAR_";
-      do {
-        code = prefix + uuidv4();
-        count = await Car.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
-    }
-    case "Sponsor": {
-      const prefix = "SPONSOR_";
-      do {
-        code = prefix + uuidv4();
-        count = await Sponsor.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
-    }
-    case "Event": {
-      const prefix = "EVENT_";
-      do {
-        code = prefix + uuidv4();
-        count = await Sponsor.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
-    }
+
+    do {
+      for (let i = 0; i < 5; i++) {
+        const randomNum = Math.floor(Math.random() * chars.length);
+        code += chars.substring(randomNum, randomNum + 1);
+      }
+
+      switch (moduleName) {
+        case "user":
+          User.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "user_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "car":
+          Car.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "car_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "sponsor":
+          Sponsor.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "sponsor_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "event":
+          Event.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "event_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        default:
+          break;
+      }
+    } while (code.length === 0);
+    return code;
+  } catch (err) {
+    this.generateResponse(err, req, next);
+    return null;
   }
 };
 

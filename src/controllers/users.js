@@ -4,14 +4,16 @@ const { Op } = require("sequelize");
 
 exports.createUser = async (req, res, next) => {
   try {
-    const code = await generateCode("User");
-    const { password, email, mobile, whatsApp } = req.body;
+    const code = await generateCode(req, next, "User");
+    const { password, email, mobile, whatsApp, cars } = req.body;
 
     const options = {
       code,
       password,
       email,
       mobile,
+      cars,
+      carCodes: cars.map((_car) => generateCode(req, next, "car")),
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
