@@ -32,15 +32,16 @@ exports.verifyAdminToken = (req, res, next) => {
     const _token = getToken(req, res);
 
     if (_token) {
-      jwt.verify(_token, process.env.JWT_SECRET_KEY, (err, data) => {
+      jwt.verify(_token, process.env.JWT_SECRET_KEY, async (err, data) => {
         if (err) generateResponse(err, req, next, 401, "general.denied");
         else {
-          const { roles } = data;
+          const { roles, code } = data;
 
           const isAdmin = _.find(roles, { code: "ADMIN" });
 
           if (isAdmin) {
-            req.user = data;
+            const _user = await User.findOne({ where: { code } });
+            req.user = _user;
             next();
           } else generateResponse(null, req, next, 401, "general.denied");
         }

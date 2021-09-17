@@ -1,4 +1,11 @@
-const { User, Car, Sponsor, Event, Announcement } = require("../db/models");
+const {
+  User,
+  Car,
+  Sponsor,
+  Event,
+  Announcement,
+  Advertisement,
+} = require("../db/models");
 const { Op } = require("sequelize");
 const generator = require("generate-password");
 
@@ -22,6 +29,9 @@ exports.generateCode = (req, next, moduleName) => {
         break;
       case "announcement":
         code = "announcement_";
+        break;
+      case "advertisement":
+        code = "advertisement_";
         break;
       default:
         code = "code_";
@@ -58,6 +68,11 @@ exports.generateCode = (req, next, moduleName) => {
         case "announcement":
           Announcement.count({ where: { code } })
             .then((_count) => (code = _count > 0 ? "announcement_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "advertisement":
+          Advertisement.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "advertisement_" : code))
             .catch((err) => this.generateResponse(err, req, next));
           break;
         default:
