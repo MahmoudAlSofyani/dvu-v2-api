@@ -23,12 +23,6 @@ exports.usersValidator = (action) => {
           .isEmpty()
           .isString()
           .isEmail(),
-        check("password")
-          .exists()
-          .withMessage("validations.user.password")
-          .not()
-          .isEmpty()
-          .isString(),
         check("mobile")
           .exists()
           .withMessage("validations.user.mobile")

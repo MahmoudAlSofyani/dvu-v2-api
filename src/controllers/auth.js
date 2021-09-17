@@ -8,6 +8,8 @@ const {
   isUniqueUser,
 } = require("../helpers");
 
+//Login route, used to verify credentials sent and generate a token
+
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -40,18 +42,22 @@ exports.login = async (req, res, next) => {
   }
 };
 
+// used for users registering on the website. Here they set their own password
+
 exports.register = async (req, res, next) => {
   try {
     const code = generateCode(req, next, "user");
     const { password, email, mobile, whatsApp, cars } = req.body;
-    const carCodes = cars.map((_car) => generateCode(req, next, "car"));
 
     const options = {
       password,
       email,
       mobile,
       cars,
-      carCodes,
+      carCodes:
+        cars &&
+        cars.length > 0 &&
+        cars.map((_car) => generateCode(req, next, "car")),
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {

@@ -1,23 +1,38 @@
 const { User } = require("../db/models");
-const { generateResponse, generateCode, isUniqueUser } = require("../helpers");
+const {
+  generateResponse,
+  generateCode,
+  isUniqueUser,
+  generatePassword,
+} = require("../helpers");
 const { Op } = require("sequelize");
+
+//For admin use only. This will create a user and a generated password which is sent
+// by email to the users email address
 
 exports.createUser = async (req, res, next) => {
   try {
-    const code = await generateCode(req, next, "User");
-    const { password, email, mobile, whatsApp, cars } = req.body;
+    const { email, mobile, whatsApp, cars } = req.body;
 
     const options = {
-      code,
-      password,
+      password: generatePassword(),
       email,
       mobile,
       cars,
-      carCodes: cars.map((_car) => generateCode(req, next, "car")),
+      carCodes:
+        cars &&
+        cars.length > 0 &&
+        cars.map((_car) => generateCode(req, next, "car")),
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
-      const _user = await User.create({ ...req.body }, options);
+      const _user = await User.create(
+        {
+          code: generateCode(req, next, "user"),
+          ...req.body,
+        },
+        options
+      );
       return res.status(200).send(_user);
     } else generateResponse(null, req, next, 400, "validations.user.notUnique");
   } catch (err) {

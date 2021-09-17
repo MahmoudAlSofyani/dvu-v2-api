@@ -1,5 +1,6 @@
 const { User, Car, Sponsor, Event } = require("../db/models");
 const { Op } = require("sequelize");
+const generator = require("generate-password");
 
 exports.generateCode = (req, next, moduleName) => {
   try {
@@ -139,4 +140,11 @@ exports.allowedImages = function (req, file, cb) {
     return cb(new Error("Only image files are allowed!"), false);
   }
   cb(null, true);
+};
+
+exports.generatePassword = (length = 10) => {
+  return generator.generate({
+    length,
+    numbers: true,
+  });
 };

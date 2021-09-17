@@ -89,12 +89,23 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       hooks: {
-        afterCreate: async (user, options) => {
+        beforeCreate: async (user, options) => {
           if (user && options) {
-            const { password, cars, carCodes } = options;
+            const { password } = options;
 
             if (password)
               user.setDataValue("password", bcrypt.hashSync(password, 12));
+          }
+          return user;
+        },
+        afterCreate: async (user, options) => {
+          if (user && options) {
+            const { cars, carCodes } = options;
+
+            const _memberRole = await sequelize.models.Role.findOne({
+              where: { code: "MEMBER" },
+            });
+            if (_memberRole) user.addRole(_memberRole);
 
             if (cars && cars.length > 0) {
               await sequelize.models.Car.bulkCreate(
