@@ -1,4 +1,4 @@
-const { Sponsor } = require("../db/models");
+const { Announcement } = require("../db/models");
 const {
   generateResponse,
   generateCode,
@@ -6,7 +6,7 @@ const {
 } = require("../helpers");
 const { Op } = require("sequelize");
 
-exports.searchSponsors = async (req, res, next) => {
+exports.searchAnnouncements = async (req, res, next) => {
   try {
     const { filters, limit } = req.body;
     let whereClause = [];
@@ -23,13 +23,10 @@ exports.searchSponsors = async (req, res, next) => {
                     code: { [Op.like]: `%${value}%` },
                   },
                   {
-                    name: { [Op.like]: `%${value}%` },
+                    title: { [Op.like]: `%${value}%` },
                   },
                   {
-                    url: { [Op.like]: `%${value}%` },
-                  },
-                  {
-                    description: { [Op.like]: `%${value}%` },
+                    details: { [Op.like]: `%${value}%` },
                   },
                 ],
               };
@@ -44,7 +41,7 @@ exports.searchSponsors = async (req, res, next) => {
         ? Object.assign({}, whereClause)
         : { ...Object.assign({}, whereClause), ...searchClause };
 
-    Sponsor.scope("full")
+    Announcement.scope("full")
       .findAll({ where: whereObj, limit })
       .then((_users) => {
         res.status(200).send(_users);
@@ -55,59 +52,65 @@ exports.searchSponsors = async (req, res, next) => {
   }
 };
 
-exports.createSponsor = async (req, res, next) => {
+exports.createAnnouncement = async (req, res, next) => {
   try {
     const { file } = req;
-    const { name } = req.body;
+    const { title } = req.body;
     let options = {
       logo: file,
-      url: name ? generateUrlSlug(name) : null,
+      url: title ? generateUrlSlug(title) : null,
     };
 
-    const _sponsor = await Sponsor.create(
+    const _announcement = await Announcement.create(
       {
-        code: generateCode(req, next, "sponsor"),
+        code: await generateCode(req, next, "announcement"),
         ...req.body,
       },
       options
     );
-    res.status(200).send(_sponsor);
+    res.status(200).send(_announcement);
   } catch (err) {
     generateResponse(err, req, next);
   }
 };
 
-exports.updateSponsorByCode = async (req, res, next) => {
+exports.updateAnnouncementByCode = async (req, res, next) => {
   try {
     const { code } = req.params;
     const { file } = req;
-    const { name } = req.body;
+    const { title } = req.body;
 
     let options = {
       logo: file,
-      url: name ? generateUrlSlug(name) : null,
       individualHooks: true,
+      url: title ? generateUrlSlug(title) : null,
     };
 
-    const [count, [_updatedSponsor]] = await Sponsor.update(
+    const [count, [_updatedAnnouncement]] = await Announcement.update(
       { ...req.body },
       { ...options, where: { code } }
     );
 
-    if (_updatedSponsor) {
-      res.status(200).send({ ..._updatedSponsor.toJSON() });
+    if (_updatedAnnouncement) {
+      res.status(200).send({ ..._updatedAnnouncement.toJSON() });
     } else
-      generateResponse(null, req, next, 400, "validations.sponsor.notFound");
+      generateResponse(
+        null,
+        req,
+        next,
+        400,
+        "validations.announcement.notFound"
+      );
   } catch (err) {
     generateResponse(err, req, next);
   }
 };
 
-exports.deleteSponsors = async (req, res, next) => {
+exports.deleteAnnouncements = async (req, res, next) => {
   try {
     const { codes } = req.body;
 
-    const _count = await Sponsor.destroy({
+    const _count = await Announcement.destroy({
       where: {
         code: {
           [Op.in]: codes,

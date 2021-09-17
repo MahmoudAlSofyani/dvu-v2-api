@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 
       this.hasOne(models.User, { foreignKey: "fileId" });
       this.hasOne(models.Sponsor, { foreignKey: "fileId" });
+      this.hasOne(models.Announcement, { foreignKey: "fileId" });
     }
   }
   File.init(

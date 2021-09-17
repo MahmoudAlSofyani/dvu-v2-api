@@ -20,6 +20,18 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      url: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      file_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "files",
+          key: "id",
+        },
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

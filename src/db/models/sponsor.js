@@ -34,7 +34,9 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         beforeCreate: async (sponsor, options) => {
           if (sponsor && options) {
-            const { logo } = options;
+            const { logo, url } = options;
+
+            if (url) sponsor.setDataValue("url", url);
 
             if (logo) {
               const _logo = await sequelize.models.File.create({
@@ -52,7 +54,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         beforeUpdate: async (sponsor, options) => {
           if (sponsor && options) {
-            const { logo } = options;
+            const { logo, url } = options;
+
+            if (url) sponsor.setDataValue("url", url);
 
             if (logo) {
               const _oldLogo = await sponsor.getLogo();
