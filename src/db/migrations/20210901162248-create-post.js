@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      url_slug: {
+      url: {
         type: Sequelize.STRING,
         allowNull: false,
       },
