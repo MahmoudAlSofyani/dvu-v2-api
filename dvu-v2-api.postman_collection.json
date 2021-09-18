@@ -1,850 +1,703 @@
 {
-	"info": {
-		"_postman_id": "5d068c80-a175-4c40-8f0a-65ed5ec16cbc",
-		"name": "dvu-v2-api-forked",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Users",
-			"item": [
-				{
-					"name": "Bulk Update",
-					"item": [
-						{
-							"name": "Status (isActive)",
-							"request": {
-								"method": "PATCH",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"codes\": [\"USER_25ce51c6\", \"SUPERADMIN\", \"SPONSOR\"],\r\n    \"isActive\": true\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{url}}/api/users/bulk/status",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"bulk",
-										"status"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "User by code",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/api/users/USER_25ce51c6",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"USER_25ce51c6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "User by code",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"lastName\": \"Sponsors\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/users/SPONSOR",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"SPONSOR"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Bulk Delete",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"codes\": [\"SPONSOR\", \"SUPERADMIN\"]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/users",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create user",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Mahmoud\",\r\n    \"lastName\": \"AlSofyani\",\r\n    \"email\": \"test@volkskreisuae.com\",\r\n    \"mobile\": \"+971555555551\",\r\n    \"whatsApp\": \"+971555555551\",\r\n    \"cars\": [\r\n        {\r\n            \"model\": \"Golf GTI\",\r\n            \"color\": \"Blue\",\r\n            \"year\": \"2021\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/users",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Search Users",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\" \r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/users/search",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"search"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Authentication",
-			"item": [
-				{
-					"name": "Login",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const obj = pm.response.json();\r",
-									"if(obj.token) {\r",
-									"    pm.collectionVariables.set('JWT', obj.token);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@volkskreisuae.com\",\r\n    \"password\": \"password\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/auth/login",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Mahmoud\",\r\n    \"lastName\": \"AlSofyani\",\r\n    \"email\": \"test@volkskreisuae.com\",\r\n    \"password\": \"123456789\",\r\n    \"mobile\": \"+971555555551\",\r\n    \"whatsApp\": \"+971555555551\",\r\n    \"cars\": [\r\n        {\r\n            \"model\": \"Golf GTI\",\r\n            \"color\": \"Blue\",\r\n            \"year\": \"2016\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        },\r\n        {\r\n            \"model\": \"Golf R\",\r\n            \"color\": \"Red\",\r\n            \"year\": \"2020\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/auth/register",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"register"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Sponsors",
-			"item": [
-				{
-					"name": "Search Sponsors",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/sponsors/search",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"sponsors",
-								"search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Sponsor",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/D:/Downloads D_Drive/3W.png"
-								},
-								{
-									"key": "name",
-									"value": "3W Healthcare",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "Some medical company. Awesome stuff",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/api/sponsors",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"sponsors"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Sponsor by Code",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "3W Healthcare edited",
-									"type": "text"
-								},
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/D:/Downloads D_Drive/4Dubai_Mall_(UAE).jpg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/api/sponsors/sponsor_G8QRS",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"sponsors",
-								"sponsor_G8QRS"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Sponsors",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"codes\": [\"sponsor_G8QRS\"]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/sponsors",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"sponsors"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Advertisements",
-			"item": [
-				{
-					"name": "Search Advertisements",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/advertisements/search",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"advertisements",
-								"search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Advertisement",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "files",
-									"type": "file",
-									"src": [
-										"/D:/Downloads D_Drive/3W.png",
-										"/D:/Downloads D_Drive/4Dubai_Mall_(UAE).jpg"
-									]
-								},
-								{
-									"key": "title",
-									"value": "Boost Gauge",
-									"type": "text"
-								},
-								{
-									"key": "price",
-									"value": "100",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "Hello",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/api/advertisements",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"advertisements"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Advertisement by Code",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "3W Healthcare edited",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "files",
-									"type": "file",
-									"src": "/D:/Downloads D_Drive/6.png"
-								},
-								{
-									"key": "deletedImages",
-									"value": "[\"a35d2fc29e9900f271e40e813e701eeb\"]",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/api/advertisements/advertisement_0B9XF",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"advertisements",
-								"advertisement_0B9XF"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Advertisements",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"codes\": [\"sponsor_G8QRS\"]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/advertisements",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"advertisements"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Announcements",
-			"item": [
-				{
-					"name": "Search Announcements",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/announcements/search",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"announcements",
-								"search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Announcement",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/D:/Downloads D_Drive/3W.png"
-								},
-								{
-									"key": "name",
-									"value": "3W Healthcare",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "Some medical company. Awesome stuff",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/api/announcements",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"announcements"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Announcement by Code",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "3W Healthcare edited",
-									"type": "text"
-								},
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/D:/Downloads D_Drive/4Dubai_Mall_(UAE).jpg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/api/announcements/announcement_G8QRS",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"announcements",
-								"announcement_G8QRS"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Announcements",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"codes\": [\"sponsor_G8QRS\"]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/announcement",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"announcement"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Events",
-			"item": [
-				{
-					"name": "Search Events",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/events/search",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"events",
-								"search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Event",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Event 2\",\r\n    \"date\": \"2020-10-10\",\r\n    \"meetingLocation\": [25, 25],\r\n    \"meetingName\": \"Al Naboodah\",\r\n    \"meetingTime\": \"2020-10-10\",\r\n    \"details\": \"Awesome event!\",\r\n    \"isMajor\": true\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/events",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"events"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register Member to Event",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"code\": \"EVENT_50d4d649\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/events/register",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"events",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Events",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"codes\": [\r\n        \"event_RZNHJ\",\r\n        \"event_INKK2\"\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/events",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"events"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Event",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Event 1 edited\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/events/event_RZNHJ",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"events",
-								"event_RZNHJ"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{JWT}}",
-				"type": "string"
-			}
-		]
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "JWT",
-			"value": ""
-		}
-	]
+  "info": {
+    "_postman_id": "5d068c80-a175-4c40-8f0a-65ed5ec16cbc",
+    "name": "dvu-v2-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Bulk Update",
+          "item": [
+            {
+              "name": "Status (isActive)",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"codes\": [\"USER_25ce51c6\", \"SUPERADMIN\", \"SPONSOR\"],\r\n    \"isActive\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/users/bulk/status",
+                  "host": ["{{url}}"],
+                  "path": ["api", "users", "bulk", "status"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User by code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/users/USER_25ce51c6",
+              "host": ["{{url}}"],
+              "path": ["api", "users", "USER_25ce51c6"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User by code",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"lastName\": \"Sponsors\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/users/SPONSOR",
+              "host": ["{{url}}"],
+              "path": ["api", "users", "SPONSOR"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codes\": [\"SPONSOR\", \"SUPERADMIN\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/users",
+              "host": ["{{url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"Mahmoud\",\r\n    \"lastName\": \"AlSofyani\",\r\n    \"email\": \"test@volkskreisuae.com\",\r\n    \"mobile\": \"+971555555551\",\r\n    \"whatsApp\": \"+971555555551\",\r\n    \"cars\": [\r\n        {\r\n            \"model\": \"Golf GTI\",\r\n            \"color\": \"Blue\",\r\n            \"year\": \"2021\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/users",
+              "host": ["{{url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\" \r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/users/search",
+              "host": ["{{url}}"],
+              "path": ["api", "users", "search"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const obj = pm.response.json();\r",
+                  "if(obj.token) {\r",
+                  "    pm.collectionVariables.set('JWT', obj.token);\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@volkskreisuae.com\",\r\n    \"password\": \"password\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/auth/login",
+              "host": ["{{url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"Mahmoud\",\r\n    \"lastName\": \"AlSofyani\",\r\n    \"email\": \"test@volkskreisuae.com\",\r\n    \"password\": \"123456789\",\r\n    \"mobile\": \"+971555555551\",\r\n    \"whatsApp\": \"+971555555551\",\r\n    \"cars\": [\r\n        {\r\n            \"model\": \"Golf GTI\",\r\n            \"color\": \"Blue\",\r\n            \"year\": \"2016\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        },\r\n        {\r\n            \"model\": \"Golf R\",\r\n            \"color\": \"Red\",\r\n            \"year\": \"2020\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/auth/register",
+              "host": ["{{url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sponsors",
+      "item": [
+        {
+          "name": "Search Sponsors",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/sponsors/search",
+              "host": ["{{url}}"],
+              "path": ["api", "sponsors", "search"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Sponsor",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/D:/Downloads D_Drive/3W.png"
+                },
+                {
+                  "key": "name",
+                  "value": "3W Healthcare",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Some medical company. Awesome stuff",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/sponsors",
+              "host": ["{{url}}"],
+              "path": ["api", "sponsors"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Sponsor by Code",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "3W Healthcare edited",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/D:/Downloads D_Drive/4Dubai_Mall_(UAE).jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/sponsors/sponsor_G8QRS",
+              "host": ["{{url}}"],
+              "path": ["api", "sponsors", "sponsor_G8QRS"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Sponsors",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codes\": [\"sponsor_G8QRS\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/sponsors",
+              "host": ["{{url}}"],
+              "path": ["api", "sponsors"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Advertisements",
+      "item": [
+        {
+          "name": "Search Advertisements",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/advertisements/search",
+              "host": ["{{url}}"],
+              "path": ["api", "advertisements", "search"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Advertisement",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": [
+                    "/D:/Downloads D_Drive/3W.png",
+                    "/D:/Downloads D_Drive/4Dubai_Mall_(UAE).jpg"
+                  ]
+                },
+                {
+                  "key": "title",
+                  "value": "Boost Gauge",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/advertisements",
+              "host": ["{{url}}"],
+              "path": ["api", "advertisements"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Advertisement by Code",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "3W Healthcare edited",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": "/D:/Downloads D_Drive/6.png"
+                },
+                {
+                  "key": "deletedImages",
+                  "value": "[\"a35d2fc29e9900f271e40e813e701eeb\"]",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/advertisements/advertisement_0B9XF",
+              "host": ["{{url}}"],
+              "path": ["api", "advertisements", "advertisement_0B9XF"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Advertisements",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codes\": [\"sponsor_G8QRS\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/advertisements",
+              "host": ["{{url}}"],
+              "path": ["api", "advertisements"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Announcements",
+      "item": [
+        {
+          "name": "Search Announcements",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/announcements/search",
+              "host": ["{{url}}"],
+              "path": ["api", "announcements", "search"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Announcement",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/D:/Downloads D_Drive/3W.png"
+                },
+                {
+                  "key": "name",
+                  "value": "3W Healthcare",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Some medical company. Awesome stuff",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/announcements",
+              "host": ["{{url}}"],
+              "path": ["api", "announcements"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Announcement by Code",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "3W Healthcare edited",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/D:/Downloads D_Drive/4Dubai_Mall_(UAE).jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/announcements/announcement_G8QRS",
+              "host": ["{{url}}"],
+              "path": ["api", "announcements", "announcement_G8QRS"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Announcements",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codes\": [\"sponsor_G8QRS\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/announcement",
+              "host": ["{{url}}"],
+              "path": ["api", "announcement"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Search Events",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"filters\": {\r\n        \"search\": \"\"\r\n    },\r\n    \"limit\": 100\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/events/search",
+              "host": ["{{url}}"],
+              "path": ["api", "events", "search"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Event 2\",\r\n    \"date\": \"2020-10-10\",\r\n    \"meetingLocation\": [25, 25],\r\n    \"meetingName\": \"Al Naboodah\",\r\n    \"meetingTime\": \"2020-10-10\",\r\n    \"details\": \"Awesome event!\",\r\n    \"isMajor\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/events",
+              "host": ["{{url}}"],
+              "path": ["api", "events"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Member to Event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"code\": \"EVENT_50d4d649\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/events/register",
+              "host": ["{{url}}"],
+              "path": ["api", "events", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Events",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codes\": [\r\n        \"event_RZNHJ\",\r\n        \"event_INKK2\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/events",
+              "host": ["{{url}}"],
+              "path": ["api", "events"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Event 1 edited\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/events/event_RZNHJ",
+              "host": ["{{url}}"],
+              "path": ["api", "events", "event_RZNHJ"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{JWT}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "JWT",
+      "value": ""
+    }
+  ]
 }
