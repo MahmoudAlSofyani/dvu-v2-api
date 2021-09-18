@@ -34,7 +34,22 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
       scopes: {
         full: {
-          include: ["images", "comments", "user"],
+          include: [
+            "images",
+            {
+              association: "comments",
+              include: [
+                {
+                  association: "user",
+                  attributes: ["code", "firstName", "lastName", "points"],
+                },
+              ],
+            },
+            {
+              association: "user",
+              attributes: ["code", "firstName", "lastName", "points"],
+            },
+          ],
         },
         images: {
           include: ["images"],

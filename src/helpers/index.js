@@ -6,6 +6,7 @@ const {
   Announcement,
   Advertisement,
   Post,
+  Comment,
 } = require("../db/models");
 const { Op } = require("sequelize");
 const generator = require("generate-password");
@@ -36,6 +37,9 @@ exports.generateCode = (req, next, moduleName) => {
         break;
       case "post":
         code = "post_";
+        break;
+      case "comment":
+        code = "comment_";
         break;
       default:
         code = "code_";
@@ -82,6 +86,11 @@ exports.generateCode = (req, next, moduleName) => {
         case "post":
           Post.count({ where: { code } })
             .then((_count) => (code = _count > 0 ? "post_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "comment":
+          Comment.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "comment_" : code))
             .catch((err) => this.generateResponse(err, req, next));
           break;
         default:
