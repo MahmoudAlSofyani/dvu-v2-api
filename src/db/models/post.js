@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Comment, { as: "comments", foreignKey: "postId" });
-      this.belongsTo(models.User, { foreignKey: "userId" });
+      this.belongsTo(models.User, { as: "user", foreignKey: "userId" });
       this.belongsToMany(models.File, {
         as: "images",
         through: models.PostFile,
@@ -34,10 +34,16 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
       scopes: {
         full: {
-          include: ["images"],
+          include: ["images", "comments", "user"],
         },
         images: {
           include: ["images"],
+        },
+        comments: {
+          include: ["comments"],
+        },
+        user: {
+          include: ["user"],
         },
       },
       hooks: {

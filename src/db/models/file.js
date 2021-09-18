@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       "updatedAt",
       "deletedAt",
       "AdvertisementFile",
+      "PostFile",
     ];
     /**
      * Helper method for defining associations.
