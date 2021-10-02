@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       mobile: DataTypes.STRING,
       whatsApp: DataTypes.STRING,
+      instagram: DataTypes.STRING,
       points: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
     },
@@ -118,6 +119,21 @@ module.exports = (sequelize, DataTypes) => {
             }
           }
           return user;
+        },
+        beforeUpdate: async (user, options) => {
+          if (user && options) {
+            const { cars, carCodes } = options;
+
+            if (cars && cars.length > 0) {
+              await sequelize.models.Car.bulkCreate(
+                cars.map((_car, index) => ({
+                  code: carCodes[index],
+                  userId: user.id,
+                  ..._car,
+                }))
+              );
+            }
+          }
         },
       },
     }

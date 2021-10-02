@@ -18,7 +18,7 @@ exports.login = async (req, res, next) => {
 
     if (_user) {
       if (!isActiveAccount(_user))
-        generateResponse(null, req, next, 401, "general.notActive");
+        return generateResponse(null, req, next, 403, "general.notActive");
 
       const isValidPassword = bcrypt.compareSync(password, _user.password);
 
@@ -33,10 +33,13 @@ exports.login = async (req, res, next) => {
         );
 
         if (token) {
-          res.status(200).send({ token });
+          res.status(200).send({
+            token,
+            user: { ..._user.toJSON(), roles: await _user.getRoles() },
+          });
         }
       } else generateResponse(null, req, next, 401, "general.denied");
-    }
+    } else generateResponse(null, req, next, 401, "general.denied");
   } catch (err) {
     generateResponse(err, req, next);
   }
@@ -62,7 +65,7 @@ exports.register = async (req, res, next) => {
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
       const _user = await User.create({ code, ...req.body }, options);
-      return res.status(200).send(_user);
+      return res.status(201).send(_user);
     } else generateResponse(null, req, next, 400, "validations.user.notUnique");
   } catch (err) {
     generateResponse(err, req, next);

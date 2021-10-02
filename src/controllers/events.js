@@ -5,6 +5,8 @@ const {
   generateUrlSlug,
 } = require("../helpers");
 const { Op } = require("sequelize");
+const _ = require("lodash");
+const moment = require("moment");
 
 exports.searchEvents = async (req, res, next) => {
   try {
@@ -57,11 +59,12 @@ exports.searchEvents = async (req, res, next) => {
 
 exports.createEvent = async (req, res, next) => {
   try {
-    const { name, meetingLocation } = req.body;
+    const { name } = req.body;
+    const code = await generateCode(req, next, "event");
 
     const _event = await Event.create({
-      code: await generateCode(req, next, "event"),
-      url: generateUrlSlug(name),
+      code,
+      url: generateUrlSlug(name, code, req, next),
       ...req.body,
     });
     res.status(200).send(_event);
@@ -124,6 +127,34 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
           .send({ msg: "You have successfully registered for this event" });
       }
     } else generateResponse(null, req, next, 400, "validations.event.notFound");
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.getAllEvents = async (req, res, next) => {
+  try {
+    const _events = await Event.findAll({ include: ["members"] });
+
+    const _filteredEvents = _.chain(_events)
+      .sortBy((_e) => _e.date)
+      .filter((_e) => moment(_e.date).isSameOrAfter(moment()));
+
+    res.status(200).send(_filteredEvents);
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.getEventByCode = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+
+    const _event = await Event.scope("full").findOne({
+      where: { code },
+    });
+
+    res.status(200).send(_event);
   } catch (err) {
     generateResponse(err, req, next);
   }

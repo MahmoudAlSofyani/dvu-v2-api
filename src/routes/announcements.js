@@ -5,13 +5,18 @@ const {
   createAnnouncement,
   updateAnnouncementByCode,
   deleteAnnouncements,
+  getAllAnnouncements,
+  getAnnouncementByCode,
 } = require("../controllers/announcements");
 const router = express.Router();
-const { verifyAdminToken } = require("../middlewares/index");
+const { verifyAdminToken, verifyMemberToken } = require("../middlewares/index");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { announcementsValidator } = require("../validators/announcements");
+
+router.get("/", verifyMemberToken, getAllAnnouncements);
+router.get("/:code", verifyMemberToken, getAnnouncementByCode);
 
 router.post("/search", verifyAdminToken, searchAnnouncements);
 router.post(

@@ -5,6 +5,8 @@ const {
   updateEventByCode,
   deleteEvents,
   handleMemberRegisterToEvent,
+  getAllEvents,
+  getEventByCode,
 } = require("../controllers/events");
 const { singleImage } = require("../controllers/file");
 const router = express.Router();
@@ -14,8 +16,10 @@ const {
 } = require("../utils/process-validation-errors");
 const { eventsValidator } = require("../validators/events");
 
+router.get("/:code", verifyMemberToken, getEventByCode);
+router.get("/", verifyMemberToken, getAllEvents);
 router.post("/register", verifyMemberToken, handleMemberRegisterToEvent);
-router.post("/search", verifyAdminToken, searchEvents);
+router.post("/search", searchEvents);
 router.post(
   "/",
   verifyAdminToken,

@@ -119,13 +119,23 @@ exports.updateUserByCode = async (req, res, next) => {
   try {
     const { code } = req.params;
 
+    const { cars } = req.body;
+
+    const options = {
+      cars,
+      carCodes:
+        cars &&
+        cars.length > 0 &&
+        cars.map((_car) => generateCode(req, next, "car")),
+    };
+
     const _user = await User.findOne({ where: { code } });
 
     if (_user) {
       for (const _attribute of Object.keys(req.body)) {
         _user[_attribute] = req.body[_attribute];
       }
-      await _user.save();
+      await _user.save(options);
       return res.status(200).send(_user);
     } else generateResponse(null, req, next, 404, "validations.user.notFound");
   } catch (err) {
@@ -167,6 +177,20 @@ exports.deleteUsers = async (req, res, next) => {
       },
     });
     res.status(200).send({ count: _count });
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.getUserProfile = async (req, res, next) => {
+  try {
+    const { user } = req;
+
+    return res.status(200).send({
+      ...user.toJSON(),
+      cars: await user.getCars(),
+      roles: await user.getRoles(),
+    });
   } catch (err) {
     generateResponse(err, req, next);
   }

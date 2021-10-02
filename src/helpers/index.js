@@ -161,14 +161,15 @@ exports.isActiveAccount = (user) => {
   else return false;
 };
 
-exports.generateUrlSlug = (title, req, next) => {
+exports.generateUrlSlug = (title, code, req, next) => {
   try {
     let titleUrl = title
       .toLowerCase()
       .replace(/[^\w ]+/g, "")
       .replace(/ +/g, "-");
 
-    return titleUrl;
+    if (code) return titleUrl + "-" + code;
+    else return titleUrl;
   } catch (err) {
     this.generateError(err, req, next, null, "general.errorSlug");
   }

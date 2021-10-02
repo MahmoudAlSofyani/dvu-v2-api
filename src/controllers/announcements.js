@@ -122,3 +122,27 @@ exports.deleteAnnouncements = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
+
+exports.getAllAnnouncements = async (req, res, next) => {
+  try {
+    const _announcements = await Announcement.scope("full").findAll();
+
+    res.status(200).send(_announcements);
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.getAnnouncementByCode = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+
+    const _announcement = await Announcement.scope("full").findOne({
+      where: { code },
+    });
+
+    res.status(200).send(_announcement);
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};

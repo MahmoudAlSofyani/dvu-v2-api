@@ -6,8 +6,9 @@ const {
   createUser,
   searchUsers,
   bulkUpdateUsersStatus,
+  getUserProfile,
 } = require("../controllers/users");
-const { verifyAdminToken } = require("../middlewares");
+const { verifyAdminToken, verifyMemberToken } = require("../middlewares");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
@@ -44,5 +45,7 @@ router.delete(
   processValidationError,
   deleteUsers
 );
+
+router.get("/", verifyMemberToken, getUserProfile);
 
 module.exports = router;
