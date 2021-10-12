@@ -7,17 +7,17 @@ const {
   deletePost,
 } = require("../controllers/posts");
 const router = express.Router();
-const { verifyAdminToken } = require("../middlewares/index");
+const { verifyToken } = require("../middlewares/index");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { postsValidator } = require("../validators/posts");
 
-router.post("/search", verifyAdminToken, searchPosts);
+router.post("/search", verifyToken, searchPosts);
 router.post(
   "/",
   multipleImage,
-  verifyAdminToken,
+  verifyToken,
   postsValidator("create"),
   processValidationError,
   createPost
@@ -25,7 +25,7 @@ router.post(
 router.patch(
   "/:code",
   multipleImage,
-  verifyAdminToken,
+  verifyToken,
   postsValidator("update"),
   processValidationError,
   updatePostByCode
@@ -33,7 +33,7 @@ router.patch(
 
 router.delete(
   "/",
-  verifyAdminToken,
+  verifyToken,
   postsValidator("delete"),
   processValidationError,
   deletePost

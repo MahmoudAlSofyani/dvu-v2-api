@@ -7,17 +7,19 @@ const {
   deleteSponsors,
 } = require("../controllers/sponsors");
 const router = express.Router();
-const { verifyAdminToken } = require("../middlewares/index");
+const { verifyToken, permittedRoles } = require("../middlewares/index");
+const { _protected, _public } = require("../middlewares/roles");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { sponsorsValidator } = require("../validators/sponsors");
 
-router.post("/search", verifyAdminToken, searchSponsors);
+router.post("/search", verifyToken, permittedRoles(..._public), searchSponsors);
 router.post(
   "/",
   singleImage,
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   sponsorsValidator("create"),
   processValidationError,
   createSponsor
@@ -25,7 +27,8 @@ router.post(
 router.patch(
   "/:code",
   singleImage,
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   sponsorsValidator("update"),
   processValidationError,
   updateSponsorByCode
@@ -33,7 +36,8 @@ router.patch(
 
 router.delete(
   "/",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   sponsorsValidator("delete"),
   processValidationError,
   deleteSponsors

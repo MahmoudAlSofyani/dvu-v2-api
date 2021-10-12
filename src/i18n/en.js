@@ -34,5 +34,6 @@ exports.en = {
     code: "Code is required",
     codes: "Atleast one code is required",
     fileUploadError: "You must upload an image",
+    forbidden: "You are not authorized",
   },
 };

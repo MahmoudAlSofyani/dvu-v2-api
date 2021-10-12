@@ -9,20 +9,32 @@ const {
   getAnnouncementByCode,
 } = require("../controllers/announcements");
 const router = express.Router();
-const { verifyAdminToken, verifyMemberToken } = require("../middlewares/index");
+const { verifyToken, permittedRoles } = require("../middlewares/index");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { announcementsValidator } = require("../validators/announcements");
+const { _public, _protected } = require("../middlewares/roles");
 
-router.get("/", verifyMemberToken, getAllAnnouncements);
-router.get("/:code", verifyMemberToken, getAnnouncementByCode);
+router.get("/", verifyToken, permittedRoles(..._public), getAllAnnouncements);
+router.get(
+  "/:code",
+  verifyToken,
+  permittedRoles(..._public),
+  getAnnouncementByCode
+);
 
-router.post("/search", verifyAdminToken, searchAnnouncements);
+router.post(
+  "/search",
+  verifyToken,
+  permittedRoles(..._public),
+  searchAnnouncements
+);
 router.post(
   "/",
   singleImage,
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   announcementsValidator("create"),
   processValidationError,
   createAnnouncement
@@ -30,7 +42,8 @@ router.post(
 router.patch(
   "/:code",
   singleImage,
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   announcementsValidator("update"),
   processValidationError,
   updateAnnouncementByCode
@@ -38,7 +51,8 @@ router.patch(
 
 router.delete(
   "/",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   announcementsValidator("delete"),
   processValidationError,
   deleteAnnouncements

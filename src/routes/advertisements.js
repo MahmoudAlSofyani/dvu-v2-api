@@ -6,18 +6,25 @@ const {
   updateAdvertisementByCode,
   deleteAdvertisement,
 } = require("../controllers/advertisements");
+const { verifyToken, permittedRoles } = require("../middlewares/index");
 const router = express.Router();
-const { verifyAdminToken } = require("../middlewares/index");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { advertisementsValidator } = require("../validators/advertisements");
+const { _public, _protected } = require("../middlewares/roles");
 
-router.post("/search", verifyAdminToken, searchAdvertisements);
+router.post(
+  "/search",
+  verifyToken,
+  permittedRoles(..._public),
+  searchAdvertisements
+);
 router.post(
   "/",
   multipleImage,
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   advertisementsValidator("create"),
   processValidationError,
   createAdvertisement
@@ -25,7 +32,8 @@ router.post(
 router.patch(
   "/:code",
   multipleImage,
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   advertisementsValidator("update"),
   processValidationError,
   updateAdvertisementByCode
@@ -33,7 +41,8 @@ router.patch(
 
 router.delete(
   "/",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   advertisementsValidator("delete"),
   processValidationError,
   deleteAdvertisement

@@ -6,16 +6,16 @@ const {
   deleteComments,
 } = require("../controllers/comments");
 const router = express.Router();
-const { verifyMemberToken } = require("../middlewares");
+const { verifyToken } = require("../middlewares");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { commentsValidator } = require("../validators/comments");
 
-router.post("/search", verifyMemberToken, searchComments);
+router.post("/search", verifyToken, searchComments);
 router.post(
   "/",
-  verifyMemberToken,
+  verifyToken,
   commentsValidator("create"),
   processValidationError,
   createComment
@@ -23,7 +23,7 @@ router.post(
 
 router.patch(
   "/:code",
-  verifyMemberToken,
+  verifyToken,
   commentsValidator("update"),
   processValidationError,
   updateCommentByCode
@@ -31,7 +31,7 @@ router.patch(
 
 router.delete(
   "/",
-  verifyMemberToken,
+  verifyToken,
   commentsValidator("delete"),
   processValidationError,
   deleteComments

@@ -8,7 +8,8 @@ const {
   bulkUpdateUsersStatus,
   getUserProfile,
 } = require("../controllers/users");
-const { verifyAdminToken, verifyMemberToken } = require("../middlewares");
+const { verifyToken, permittedRoles } = require("../middlewares");
+const { _protected, _public } = require("../middlewares/roles");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
@@ -17,35 +18,45 @@ const router = express.Router();
 
 router.post(
   "/",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   usersValidator("create"),
   processValidationError,
   createUser
 );
-router.post("/search", verifyAdminToken, searchUsers);
-router.get("/:code", verifyAdminToken, getUserByCode);
+router.post(
+  "/search",
+  verifyToken,
+  permittedRoles(..._protected),
+  permittedRoles("SPONSOR", "MEMBER"),
+  searchUsers
+);
+router.get("/:code", verifyToken, permittedRoles(..._protected), getUserByCode);
 router.patch(
   "/:code",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   usersValidator("update"),
   processValidationError,
   updateUserByCode
 );
 router.patch(
   "/bulk/status",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   usersValidator("bulk-update-status"),
   processValidationError,
   bulkUpdateUsersStatus
 );
 router.delete(
   "/",
-  verifyAdminToken,
+  verifyToken,
+  permittedRoles(..._protected),
   usersValidator("bulk-delete"),
   processValidationError,
   deleteUsers
 );
 
-router.get("/", verifyMemberToken, getUserProfile);
+router.get("/", verifyToken, permittedRoles(..._public), getUserProfile);
 
 module.exports = router;
