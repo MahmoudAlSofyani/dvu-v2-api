@@ -3,67 +3,31 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../db/models");
 const _ = require("lodash");
 
-exports.verifyMemberToken = (req, res, next) => {
-  try {
-    const _token = getToken(req, res);
+exports.permittedRoles = (...roles) => {
+  return (req, res, next) => {
+    const { user } = req;
 
-    if (_token) {
-      jwt.verify(_token, process.env.JWT_SECRET_KEY, (err, data) => {
-        if (err) generateResponse(err, req, next, 401, "general.denied");
-        else {
-          const { roles } = data;
-          const isMember = _.find(roles, { code: "MEMBER" });
-
-          if (isMember) {
-            req.user = data;
-            next();
-          } else generateResponse(null, req, next, 401, "general.denied");
-        }
-      });
-    } else generateResponse(null, req, next, 401, "general.denied");
-  } catch (err) {
-    generateResponse(err, req, next);
-  }
+    if (user && user.roles.some((_role) => roles.includes(_role.code))) next();
+    else generateResponse(null, req, next, 403, "general.forbidden");
+  };
 };
 
-exports.verifyAdminToken = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
   try {
     const _token = getToken(req, res);
 
     if (_token) {
-      jwt.verify(_token, process.env.JWT_SECRET_KEY, (err, data) => {
+      jwt.verify(_token, process.env.JWT_SECRET_KEY, async (err, data) => {
         if (err) generateResponse(err, req, next, 401, "general.denied");
         else {
-          const { roles } = data;
+          const { code } = data;
 
-          const isAdmin = _.find(roles, { code: "ADMIN" });
-
-          if (isAdmin) {
-            req.user = data;
-            next();
-          } else generateResponse(null, req, next, 401, "general.denied");
-        }
-      });
-    } else generateResponse(null, req, next, 401, "general.denied");
-  } catch (err) {
-    generateResponse(err, req, next);
-  }
-};
-
-exports.verifySponsorToken = (req, res, next) => {
-  try {
-    const _token = getToken(req, res);
-
-    if (_token) {
-      jwt.verify(_token, process.env.JWT_SECRET_KEY, (err, data) => {
-        if (err) generateResponse(err, req, next, 401, "general.denied");
-        else {
-          const { roles } = data;
-
-          const isSponsor = _.find(roles, { code: "SPONSOR" });
-
-          if (isSponsor) {
-            req.user = data;
+          const _user = await User.findOne({
+            where: { code },
+            include: ["roles"],
+          });
+          if (_user && _user.roles.some((_role) => _role.code !== "PURGED")) {
+            req.user = _user;
             next();
           } else generateResponse(null, req, next, 401, "general.denied");
         }

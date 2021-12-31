@@ -1,67 +1,62 @@
-const { check } = require("express-validator");
+const { check, param } = require("express-validator");
 
-exports.usersValidator = (action) => {
-  switch (action.toLowerCase()) {
+exports.eventsValidator = (action) => {
+  switch (action) {
     case "create":
       return [
-        check("firstName")
+        check("name")
           .exists()
-          .withMessage("validations.user.firstName")
+          .withMessage("validations.event.name")
           .not()
           .isEmpty()
           .isString(),
-        check("lastName")
+        check("date")
           .exists()
-          .withMessage("validations.user.lastName")
+          .withMessage("validations.event.date")
           .not()
           .isEmpty()
           .isString(),
-        check("email")
+        check("meetingLocation")
           .exists()
-          .withMessage("validations.user.email")
-          .not()
-          .isEmpty()
-          .isString()
-          .isEmail(),
-        check("mobile")
-          .exists()
-          .withMessage("validations.user.mobile")
-          .not()
-          .isEmpty()
-          .isString(),
-        check("whatsApp")
-          .exists()
-          .withMessage("validations.user.whatsApp")
-          .not()
-          .isEmpty()
-          .isString()
-          .optional(),
-      ];
-    case "bulk-update-status":
-      return [
-        check("codes")
-          .exists()
-          .withMessage("general.codes")
+          .withMessage("validations.event.meetingLocation")
           .not()
           .isEmpty()
           .isArray(),
-        check("isActive")
+        check("meetingTime")
           .exists()
-          .withMessage("validations.user.isActive")
+          .withMessage("validations.event.meetingTime")
+          .not()
+          .isEmpty()
+          .isString(),
+        check("meetingName")
+          .exists()
+          .withMessage("validations.event.meetingName")
+          .not()
+          .isEmpty()
+          .isString(),
+        check("details")
+          .exists()
+          .withMessage("validations.event.details")
+          .not()
+          .isEmpty()
+          .isString(),
+        check("isMajor")
+          .exists()
+          .withMessage("validations.event.isMajor")
           .not()
           .isEmpty()
           .isBoolean(),
       ];
     case "update":
       return [
-        check("code")
+        param("code")
           .exists()
           .withMessage("general.code")
           .not()
           .isEmpty()
           .isString(),
       ];
-    case "bulk-delete":
+    case "delete":
       return [
         check("codes")
           .exists()

@@ -36,6 +36,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      instagram: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       points: {
         type: Sequelize.INTEGER,
         allowNull: false,

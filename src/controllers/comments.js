@@ -1,4 +1,8 @@
-const { Sponsor } = require("../db/models");
+//create comment and add it to post by code
+//delete comment
+//update comment
+
+const { Comment } = require("../db/models");
 const {
   generateResponse,
   generateCode,
@@ -6,7 +10,7 @@ const {
 } = require("../helpers");
 const { Op } = require("sequelize");
 
-exports.searchSponsors = async (req, res, next) => {
+exports.searchComments = async (req, res, next) => {
   try {
     const { filters, limit } = req.body;
     let whereClause = [];
@@ -23,13 +27,7 @@ exports.searchSponsors = async (req, res, next) => {
                     code: { [Op.like]: `%${value}%` },
                   },
                   {
-                    name: { [Op.like]: `%${value}%` },
-                  },
-                  {
-                    url: { [Op.like]: `%${value}%` },
-                  },
-                  {
-                    description: { [Op.like]: `%${value}%` },
+                    details: { [Op.like]: `%${value}%` },
                   },
                 ],
               };
@@ -44,10 +42,10 @@ exports.searchSponsors = async (req, res, next) => {
         ? Object.assign({}, whereClause)
         : { ...Object.assign({}, whereClause), ...searchClause };
 
-    Sponsor.scope("full")
+    Comment.scope("full")
       .findAll({ where: whereObj, limit })
-      .then((_users) => {
-        res.status(200).send(_users);
+      .then((_comments) => {
+        res.status(200).send(_comments);
       })
       .catch((err) => generateResponse(err, req, next));
   } catch (err) {
@@ -55,59 +53,53 @@ exports.searchSponsors = async (req, res, next) => {
   }
 };
 
-exports.createSponsor = async (req, res, next) => {
+exports.createComment = async (req, res, next) => {
   try {
-    const { file } = req;
-    const { name } = req.body;
+    const { post } = req.body;
+    const { user } = req;
+
     let options = {
-      logo: file,
-      url: name ? generateUrlSlug(name) : null,
+      user,
+      post,
     };
 
-    const _sponsor = await Sponsor.create(
+    const _comment = await Comment.create(
       {
-        code: generateCode(req, next, "sponsor"),
+        code: await generateCode(req, next, "comment"),
         ...req.body,
       },
       options
     );
-    res.status(200).send(_sponsor);
+    res.status(200).send(_comment);
   } catch (err) {
     generateResponse(err, req, next);
   }
 };
 
-exports.updateSponsorByCode = async (req, res, next) => {
+exports.updateCommentByCode = async (req, res, next) => {
   try {
     const { code } = req.params;
-    const { file } = req;
-    const { name } = req.body;
+    const { user } = req;
 
-    let options = {
-      logo: file,
-      url: name ? generateUrlSlug(name) : null,
-      individualHooks: true,
-    };
-
-    const [count, [_updatedSponsor]] = await Sponsor.update(
+    const [count, [_updatedComment]] = await Comment.update(
       { ...req.body },
-      { ...options, where: { code } }
+      { individualHooks: true, where: { code, userId: user.id } }
     );
 
-    if (_updatedSponsor) {
-      res.status(200).send({ ..._updatedSponsor.toJSON() });
+    if (_updatedComment) {
+      res.status(200).send({ ..._updatedComment.toJSON() });
     } else
-      generateResponse(null, req, next, 400, "validations.sponsor.notFound");
+      generateResponse(null, req, next, 400, "validations.comment.notFound");
   } catch (err) {
     generateResponse(err, req, next);
   }
 };
 
-exports.deleteSponsors = async (req, res, next) => {
+exports.deleteComments = async (req, res, next) => {
   try {
     const { codes } = req.body;
 
-    const _count = await Sponsor.destroy({
+    const _count = await Comment.destroy({
       where: {
         code: {
           [Op.in]: codes,

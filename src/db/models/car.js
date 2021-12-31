@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       plateCode: DataTypes.STRING,
       plateNumber: DataTypes.STRING,
       plateSource: DataTypes.STRING,
+      vinNumber: DataTypes.STRING,
     },
     {
       sequelize,

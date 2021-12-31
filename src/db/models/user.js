@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       mobile: DataTypes.STRING,
       whatsApp: DataTypes.STRING,
+      instagram: DataTypes.STRING,
       points: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
     },
@@ -89,25 +90,50 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       hooks: {
-        afterCreate: async (user, options) => {
+        beforeCreate: async (user, options) => {
           if (user && options) {
-            const { userCode, password, car, carCode } = options;
+            const { password } = options;
 
-            if (userCode) user.setDataValue("code", userCode);
             if (password)
               user.setDataValue("password", bcrypt.hashSync(password, 12));
+          }
+          return user;
+        },
+        afterCreate: async (user, options) => {
+          if (user && options) {
+            const { cars, carCodes } = options;
 
-            if (car) {
-              const _car = await sequelize.models.Car.create({
-                code: carCode,
-                userId: user.id,
-                ...car,
-              });
+            const _memberRole = await sequelize.models.Role.findOne({
+              where: { code: "MEMBER" },
+            });
+            if (_memberRole) user.addRole(_memberRole);
 
-              if (car) await user.addCar(_car);
+            if (cars && cars.length > 0) {
+              await sequelize.models.Car.bulkCreate(
+                cars.map((_car, index) => ({
+                  code: carCodes[index],
+                  userId: user.id,
+                  ..._car,
+                }))
+              );
             }
           }
           return user;
+        },
+        beforeUpdate: async (user, options) => {
+          if (user && options) {
+            const { cars, carCodes } = options;
+
+            if (cars && cars.length > 0) {
+              await sequelize.models.Car.bulkCreate(
+                cars.map((_car, index) => ({
+                  code: carCodes[index],
+                  userId: user.id,
+                  ..._car,
+                }))
+              );
+            }
+          }
         },
       },
     }

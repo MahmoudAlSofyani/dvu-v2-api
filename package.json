@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "develop": "nodemon ./bin/www",
-    "sequelize": "sequelize db:migrate && sequelize db:seed:all",
+    "migrate": "sequelize db:migrate && sequelize db:seed:all",
     "clean": "sequelize db:migrate:undo:all",
-    "reset": "npm run clean && npm run sequelize && npm run develop"
+    "reset": "sequelize db:migrate:undo:all && npm run migrate",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles",
+    "pretest": "cross-env NODE_ENV=test npm run reset"
   },
   "dependencies": {
     "@sentry/node": "^6.12.0",
@@ -22,6 +24,7 @@
     "express-locale": "^2.0.0",
     "express-rate-limit": "^5.3.0",
     "express-validator": "^6.12.1",
+    "generate-password": "^1.6.1",
     "helmet": "^4.6.0",
     "http-errors": "^1.6.3",
     "jade": "~1.11.0",
@@ -36,5 +39,18 @@
     "object.fromentries": "^2.0.4",
     "sequelize": "^6.6.5",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^27.4.5",
+    "supertest": "^6.1.6"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
+
+

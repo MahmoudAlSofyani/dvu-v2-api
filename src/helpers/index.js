@@ -1,37 +1,106 @@
-const { User, Car, Sponsor } = require("../db/models");
-const { v4: uuidv4 } = require("uuid");
+const {
+  User,
+  Car,
+  Sponsor,
+  Event,
+  Announcement,
+  Advertisement,
+  Post,
+  Comment,
+} = require("../db/models");
 const { Op } = require("sequelize");
-const fs = require("fs");
+const generator = require("generate-password");
 
-exports.generateCode = async (moduleName, length) => {
-  let code;
-  let count = 0;
+exports.generateCode = (req, next, moduleName) => {
+  try {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    let code = "";
 
-  switch (moduleName) {
-    case "User": {
-      const prefix = "USER_";
-      do {
-        code = prefix + uuidv4();
-        count = await User.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
+    switch (moduleName) {
+      case "user":
+        code = "user_";
+        break;
+      case "car":
+        code = "car_";
+        break;
+      case "sponsor":
+        code = "sponsor_";
+        break;
+      case "event":
+        code = "event_";
+        break;
+      case "announcement":
+        code = "announcement_";
+        break;
+      case "advertisement":
+        code = "advertisement_";
+        break;
+      case "post":
+        code = "post_";
+        break;
+      case "comment":
+        code = "comment_";
+        break;
+      default:
+        code = "code_";
+        break;
     }
-    case "Car": {
-      const prefix = "CAR_";
-      do {
-        code = prefix + uuidv4();
-        count = await Car.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
-    }
-    case "Sponsor": {
-      const prefix = "SPONSOR_";
-      do {
-        code = prefix + uuidv4();
-        count = await Sponsor.count({ where: { code } });
-      } while (count > 0);
-      return code.split("-")[0];
-    }
+
+    do {
+      for (let i = 0; i < 5; i++) {
+        const randomNum = Math.floor(Math.random() * chars.length);
+        code += chars.substring(randomNum, randomNum + 1);
+      }
+
+      switch (moduleName) {
+        case "user":
+          User.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "user_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "car":
+          Car.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "car_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "sponsor":
+          Sponsor.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "sponsor_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "event":
+          Event.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "event_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "announcement":
+          Announcement.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "announcement_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "advertisement":
+          Advertisement.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "advertisement_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "post":
+          Post.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "post_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        case "comment":
+          Comment.count({ where: { code } })
+            .then((_count) => (code = _count > 0 ? "comment_" : code))
+            .catch((err) => this.generateResponse(err, req, next));
+          break;
+        default:
+          break;
+      }
+    } while (code.length === 0);
+    return code;
+  } catch (err) {
+    this.generateResponse(err, req, next);
+    return null;
   }
 };
 
@@ -92,14 +161,15 @@ exports.isActiveAccount = (user) => {
   else return false;
 };
 
-exports.generateUrlSlug = (title, req, next) => {
+exports.generateUrlSlug = (title, code, req, next) => {
   try {
     let titleUrl = title
       .toLowerCase()
       .replace(/[^\w ]+/g, "")
       .replace(/ +/g, "-");
 
-    return titleUrl;
+    if (code) return titleUrl + "-" + code;
+    else return titleUrl;
   } catch (err) {
     this.generateError(err, req, next, null, "general.errorSlug");
   }
@@ -112,4 +182,11 @@ exports.allowedImages = function (req, file, cb) {
     return cb(new Error("Only image files are allowed!"), false);
   }
   cb(null, true);
+};
+
+exports.generatePassword = (length = 10) => {
+  return generator.generate({
+    length,
+    numbers: true,
+  });
 };

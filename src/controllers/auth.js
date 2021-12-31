@@ -8,6 +8,8 @@ const {
   isUniqueUser,
 } = require("../helpers");
 
+//Login route, used to verify credentials sent and generate a token
+
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -16,7 +18,7 @@ exports.login = async (req, res, next) => {
 
     if (_user) {
       if (!isActiveAccount(_user))
-        generateResponse(null, req, next, 401, "general.notActive");
+        return generateResponse(null, req, next, 403, "general.notActive");
 
       const isValidPassword = bcrypt.compareSync(password, _user.password);
 
@@ -31,32 +33,39 @@ exports.login = async (req, res, next) => {
         );
 
         if (token) {
-          res.status(200).send({ token });
+          res.status(200).send({
+            token,
+            user: { ..._user.toJSON(), roles: await _user.getRoles() },
+          });
         }
       } else generateResponse(null, req, next, 401, "general.denied");
-    }
+    } else generateResponse(null, req, next, 401, "general.denied");
   } catch (err) {
     generateResponse(err, req, next);
   }
 };
 
+// used for users registering on the website. Here they set their own password
+
 exports.register = async (req, res, next) => {
   try {
-    const userCode = await generateCode("User");
-    const carCode = await generateCode("Car");
-    const { password, email, mobile, whatsApp, car } = req.body;
+    const code = generateCode(req, next, "user");
+    const { password, email, mobile, whatsApp, cars } = req.body;
 
     const options = {
-      carCode,
       password,
       email,
       mobile,
-      car,
+      cars,
+      carCodes:
+        cars &&
+        cars.length > 0 &&
+        cars.map((_car) => generateCode(req, next, "car")),
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
-      const _user = await User.create({ code: userCode, ...req.body }, options);
-      return res.status(200).send(_user);
+      const _user = await User.create({ code, ...req.body }, options);
+      return res.status(201).send(_user);
     } else generateResponse(null, req, next, 400, "validations.user.notUnique");
   } catch (err) {
     generateResponse(err, req, next);

@@ -1,18 +1,24 @@
 const { check, param } = require("express-validator");
 
-exports.sponsorsValidator = (action) => {
+exports.advertisementsValidator = (action) => {
   switch (action) {
     case "create":
       return [
-        check("name")
+        check("title")
           .exists()
-          .withMessage("validations.sponsor.name")
+          .withMessage("validations.advertisement.title")
           .not()
           .isEmpty()
           .isString(),
+        check("price")
+          .exists()
+          .withMessage("validations.advertisement.price")
+          .not()
+          .isEmpty()
+          .isNumeric(),
         check("description")
           .exists()
-          .withMessage("validations.sponsor.description")
+          .withMessage("validations.advertisement.description")
           .not()
           .isEmpty()
           .isString(),
