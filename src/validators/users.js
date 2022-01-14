@@ -36,8 +36,14 @@ exports.usersValidator = (action) => {
           .isEmpty()
           .isString()
           .optional(),
+          check("password")
+          .exists()
+          .withMessage("validations.user.password")
+          .isString()
+          .not()
+          .isEmpty(),
       ];
-    case "bulk-update-status":
+    case "update-user-status":
       return [
         check("codes")
           .exists()
@@ -61,14 +67,14 @@ exports.usersValidator = (action) => {
           .isEmpty()
           .isString(),
       ];
-    case "bulk-delete":
+    case "delete":
       return [
-        check("codes")
+        check("code")
           .exists()
-          .withMessage("general.codes")
+          .withMessage("general.code")
           .not()
           .isEmpty()
-          .isArray(),
+          .isString()
       ];
   }
 };
