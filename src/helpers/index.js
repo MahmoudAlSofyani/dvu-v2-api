@@ -109,13 +109,13 @@ exports.isUniqueUser = async (email, mobile, whatsApp) => {
     where: {
       [Op.or]: [
         {
-          email,
+          email : email || "",
         },
         {
-          mobile,
+          mobile: mobile || "",
         },
         {
-          whatsApp,
+          whatsApp : whatsApp || "",
         },
       ],
     },

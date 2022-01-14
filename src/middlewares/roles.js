@@ -1,4 +1,5 @@
-const _protected = ["ADMIN"];
-const _public = ["ADMIN", "MEMBER", "LEGACY", "WOLFSBURG"];
+const _ADMIN = ["SUPERADMIN", "ADMIN"]
+const _GENERAL = ["MEMBER", "LEGACY"]
+const _VIP = ["WOLFSBURG"]
 
-module.exports = { _protected, _public };
+module.exports = { _ADMIN, _GENERAL, _VIP };
