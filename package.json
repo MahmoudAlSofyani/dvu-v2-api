@@ -19,7 +19,6 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv-safe": "^8.2.0",
-    "email-templates": "^8.0.8",
     "express": "~4.16.1",
     "express-locale": "^2.0.0",
     "express-rate-limit": "^5.3.0",
@@ -52,5 +51,3 @@
     ]
   }
 }
-
-
