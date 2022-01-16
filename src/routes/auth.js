@@ -1,17 +1,37 @@
 const express = require("express");
-const { login, register } = require("../controllers/auth");
+const { login, resetPassword, changePassword } = require("../controllers/auth");
+const { sendResetPassword } = require("../controllers/emails");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { authValidator } = require("../validators/auth");
 const router = express.Router();
 
+// Change Password  []
+// Reset Password   [*]
+// Login            [*]
+
 router.post("/login", authValidator("login"), processValidationError, login);
+
 router.post(
-  "/register",
-  authValidator("register"),
+  "/reset-password/:token",
+  authValidator("reset-password-with-token"),
   processValidationError,
-  register
+  resetPassword
+);
+
+router.post(
+  "/reset-password",
+  authValidator("reset-password"),
+  processValidationError,
+  sendResetPassword
+);
+
+router.post(
+  "/change-password",
+  authValidator("change-password"),
+  processValidationError,
+  changePassword
 );
 
 module.exports = router;

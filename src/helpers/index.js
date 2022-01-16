@@ -156,10 +156,7 @@ exports.getToken = (req, next) => {
   }
 };
 
-exports.isActiveAccount = (user) => {
-  if (user.isActive) return true;
-  else return false;
-};
+exports.isActiveAccount = (user) => user.isActive;
 
 exports.generateUrlSlug = (title, code, req, next) => {
   try {

@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
       this.hasMany(models.Comment, { foreignKey: "userId" });
       this.hasMany(models.Post, { foreignKey: "userId" });
+      this.hasMany(models.PasswordResetToken, { foreignKey: "userId" });
     }
   }
   User.init(
@@ -122,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         beforeUpdate: async (user, options) => {
           if (user && options) {
-            const { cars, carCodes } = options;
+            const { cars, carCodes, password } = options;
 
             if (cars && cars.length > 0) {
               await sequelize.models.Car.bulkCreate(
@@ -132,6 +133,10 @@ module.exports = (sequelize, DataTypes) => {
                   ..._car,
                 }))
               );
+            }
+
+            if (password) {
+              user.setDataValue("password", bcrypt.hashSync(password, 12));
             }
           }
         },

@@ -1,12 +1,8 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../db/models");
+const { User, PasswordResetToken } = require("../db/models");
 const bcrypt = require("bcrypt");
-const {
-  generateResponse,
-  isActiveAccount,
-  generateCode,
-  isUniqueUser,
-} = require("../helpers");
+const { generateResponse, isActiveAccount } = require("../helpers");
+const moment = require("moment");
 
 //Login route, used to verify credentials sent and generate a token
 
@@ -45,29 +41,43 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// used for users registering on the website. Here they set their own password
-
-exports.register = async (req, res, next) => {
+exports.resetPassword = async (req, res, next) => {
   try {
-    const code = generateCode(req, next, "user");
-    const { password, email, mobile, whatsApp, cars } = req.body;
+    const { token } = req.params;
+    const { password } = req.body;
+    console.log("TOKEN: ", token);
 
-    const options = {
-      password,
-      email,
-      mobile,
-      cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
-    };
+    const _token = await PasswordResetToken.findOne({ where: { token } });
 
-    if (await isUniqueUser(email, mobile, whatsApp)) {
-      const _user = await User.create({ code, ...req.body }, options);
-      return res.status(201).send(_user);
-    } else generateResponse(null, req, next, 400, "validations.user.notUnique");
+    if (_token) {
+      if (!moment(_token.tokenExpiry).isBefore(moment())) {
+        const _user = await User.findByPk(_token.userId);
+
+        const options = {
+          password,
+        };
+
+        await _user.save(options);
+
+        return res.status(200).send({ msg: "Password changed successfully" });
+      } else
+        return generateResponse(
+          null,
+          req,
+          next,
+          400,
+          "validations.auth.expiredToken"
+        );
+    } else
+      return generateResponse(
+        null,
+        req,
+        next,
+        400,
+        "validations.auth.expiredToken"
+      );
   } catch (err) {
     generateResponse(err, req, next);
   }
 };
+exports.changePassword = async (req, res, next) => {};

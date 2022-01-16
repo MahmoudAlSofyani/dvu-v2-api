@@ -13,6 +13,7 @@ exports.en = {
     auth: {
       email: "Email required",
       password: "Password required",
+      expiredToken: "Email expired. Please request a new one",
     },
     sponsor: {
       name: "Name required",
