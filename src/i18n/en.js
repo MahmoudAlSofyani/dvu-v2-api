@@ -17,11 +17,8 @@ exports.en = {
       newPassword: "New password is required",
       passwordMismatch: "Invalid old password",
     },
-    sponsor: {
-      name: "Name required",
-      description: "Description required",
-      logo: "Logo required",
-      notFound: "Sponsor not found",
+    advertisment: {
+      notFound: "Advertisment not found",
     },
   },
   general: {

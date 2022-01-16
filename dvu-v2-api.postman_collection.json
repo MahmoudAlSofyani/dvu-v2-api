@@ -12,18 +12,18 @@
 					"name": "Admin Auth Routes",
 					"item": [
 						{
-							"name": "Get user by code",
+							"name": "Get user by uid",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/users/SUPERADMIN",
+									"raw": "{{url}}/users/a20d3649-a6d5-43db-ad8e-8fcc3b492e8a",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"users",
-										"SUPERADMIN"
+										"a20d3649-a6d5-43db-ad8e-8fcc3b492e8a"
 									]
 								}
 							},
@@ -44,13 +44,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/users/SUPERADMIN",
+									"raw": "{{url}}/users/a20d3649-a6d5-43db-ad8e-8fcc3b492e8a",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"users",
-										"SUPERADMIN"
+										"a20d3649-a6d5-43db-ad8e-8fcc3b492e8a"
 									]
 								}
 							},
@@ -63,7 +63,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"codes\": [\"SUPERADMIN\"]\n}",
+									"raw": "{\n    \"uids\": [\"a20d3649-a6d5-43db-ad8e-8fcc3b492e8a\"]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -140,7 +140,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Super\",\n    \"lastName\": \"Admin\"\n}",
+									"raw": "{\n    \"firstName\": \"Mahmoud\",\n    \"lastName\": \"AlSofyani\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -247,12 +247,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/auth/login",
+							"raw": "{{url}}/auth/login",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"api",
 								"auth",
 								"login"
 							]
@@ -261,13 +260,13 @@
 					"response": []
 				},
 				{
-					"name": "Register",
+					"name": "Send Reset Password Email",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Mahmoud\",\r\n    \"lastName\": \"AlSofyani\",\r\n    \"email\": \"test@volkskreisuae.com\",\r\n    \"password\": \"123456789\",\r\n    \"mobile\": \"+971555555551\",\r\n    \"whatsApp\": \"+971555555551\",\r\n    \"cars\": [\r\n        {\r\n            \"model\": \"Golf GTI\",\r\n            \"color\": \"Blue\",\r\n            \"year\": \"2016\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        },\r\n        {\r\n            \"model\": \"Golf R\",\r\n            \"color\": \"Red\",\r\n            \"year\": \"2020\",\r\n            \"plateCode\": \"DVB\",\r\n            \"plateNumber\": \"3969\",\r\n            \"plateSource\": \"Saudi Arabia\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\n    \"email\": \"admin@volkskreisuae.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -275,18 +274,260 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/auth/register",
+							"raw": "{{url}}/auth/reset-password",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"api",
 								"auth",
-								"register"
+								"reset-password"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Reset Password With Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/reset-password/533387a1-a525-441d-b88f-1f48a558eda9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"533387a1-a525-441d-b88f-1f48a558eda9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"Msafar95!!\",\n    \"newPassword\": \"Msafar95!!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/change-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Advertisements",
+			"item": [
+				{
+					"name": "Admin Auth Routes",
+					"item": [
+						{
+							"name": "Search Advertisments",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/advertisements/search",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements",
+										"search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Bulkd Delete advertismewnts",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uids\": [\"8e035b80-4343-4083-b8ba-c6a86db747f5\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/advertisements",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "General Auth Routes",
+					"item": [
+						{
+							"name": "Create Advertisment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Ad 1",
+											"type": "default"
+										},
+										{
+											"key": "price",
+											"value": "100",
+											"type": "default"
+										},
+										{
+											"key": "description",
+											"value": "some description",
+											"type": "default"
+										},
+										{
+											"key": "files",
+											"type": "file",
+											"src": "/Users/mahmoudalsofyani/Documents/IMG_3144.jpeg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/advertisements",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get ad by uid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/advertisements/8e035b80-4343-4083-b8ba-c6a86db747f5",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements",
+										"8e035b80-4343-4083-b8ba-c6a86db747f5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all advertisments that are verified",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/advertisements",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update advertisment by uid",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "ad edited",
+											"type": "default"
+										},
+										{
+											"key": "price",
+											"value": "10000",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/advertisements/8e035b80-4343-4083-b8ba-c6a86db747f5",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements",
+										"8e035b80-4343-4083-b8ba-c6a86db747f5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Mark ad as sold",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/advertisements/sold/8e035b80-4343-4083-b8ba-c6a86db747f5",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"advertisements",
+										"sold",
+										"8e035b80-4343-4083-b8ba-c6a86db747f5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}

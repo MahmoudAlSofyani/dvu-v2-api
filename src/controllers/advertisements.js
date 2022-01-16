@@ -49,6 +49,16 @@ exports.searchAdvertisements = async (req, res, next) => {
   }
 };
 
+exports.getAllVerifiedAdvertisments = async (req, res, next) => {
+  try {
+    const _advertisments = await Advertisement.scope("isVerified").findAll();
+
+    return res.status(200).send(_advertisments);
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
 exports.createAdvertisement = async (req, res, next) => {
   try {
     const { files, user } = req;
@@ -72,6 +82,26 @@ exports.createAdvertisement = async (req, res, next) => {
   }
 };
 
+exports.getAdvertismentByUid = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const _advertisement = await Advertisement.findOne({ where: { uid } });
+
+    if (_advertisement) return res.status(200).send(_advertisement);
+    else
+      generateResponse(
+        null,
+        req,
+        next,
+        404,
+        "validations.advertisement.notFound"
+      );
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
 exports.updateAdvertismentByUid = async (req, res, next) => {
   try {
     const { uid } = req.params;
@@ -85,7 +115,7 @@ exports.updateAdvertismentByUid = async (req, res, next) => {
       individualHooks: true,
     };
 
-    const [count, [_updatedAdvertisement]] = await Advertisement.update(
+    const [_, [_updatedAdvertisement]] = await Advertisement.update(
       { ...req.body },
       { ...options, where: { uid } }
     );
@@ -99,6 +129,30 @@ exports.updateAdvertismentByUid = async (req, res, next) => {
         next,
         400,
         "validations.advertisement.notFound"
+      );
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.markAdvertismentAsSold = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const _advertisment = await Advertisement.findOne({ where: { uid } });
+
+    if (_advertisment) {
+      _advertisment.isSold = true;
+      await _advertisment.save();
+
+      return res.status(200).send(_advertisment);
+    } else
+      generateResponse(
+        null,
+        req,
+        next,
+        404,
+        "validations.advertisment.notFound"
       );
   } catch (err) {
     generateResponse(err, req, next);

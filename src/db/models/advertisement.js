@@ -48,6 +48,18 @@ module.exports = (sequelize, DataTypes) => {
         images: {
           include: ["images"],
         },
+        isVerified: {
+          where: {
+            isVerified: true,
+          },
+          include: [
+            "images",
+            {
+              association: "user",
+              attributes: ["uid", "firstName", "lastName"],
+            },
+          ],
+        },
       },
       hooks: {
         beforeCreate: async (advertisement, options) => {
