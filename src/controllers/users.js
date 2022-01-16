@@ -56,14 +56,12 @@ exports.updateUserProfile = async (req, res, next) => {
       carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 
-    const _user = await User.findOne({ where: { uid: user.uid } });
-
-    if (_user) {
+    if (user) {
       for (const _attribute of Object.keys(req.body)) {
-        _user[_attribute] = req.body[_attribute];
+        user[_attribute] = req.body[_attribute];
       }
-      await _user.save(options);
-      return res.status(200).send(_user);
+      await user.save(options);
+      return res.status(200).send(user);
     } else generateResponse(null, req, next, 404, "validations.user.notFound");
   } catch (err) {
     generateResponse(err, req, next);
