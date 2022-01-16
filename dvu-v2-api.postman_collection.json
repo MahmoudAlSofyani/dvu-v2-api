@@ -736,6 +736,174 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Announcements",
+			"item": [
+				{
+					"name": "Admin Auth routes",
+					"item": [
+						{
+							"name": "Create announcement",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/Users/mahmoudalsofyani/Documents/IMG_3144.jpeg"
+										},
+										{
+											"key": "title",
+											"value": "announcement 1",
+											"type": "default"
+										},
+										{
+											"key": "details",
+											"value": "hello, this is an announcement",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/announcements",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit announcement by uid",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "edited announcement",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/announcements/93f12e6d-fde7-4d60-86cd-34593a61fc9a",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements",
+										"93f12e6d-fde7-4d60-86cd-34593a61fc9a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Bulk delete announcements",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uids\": [\"93f12e6d-fde7-4d60-86cd-34593a61fc9a\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/announcements",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search announcements",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"filters\": {\n        \"search\": \"\"\n    },\n    \"limit\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/announcements/search",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements",
+										"search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "General Auth Routes",
+					"item": [
+						{
+							"name": "Get all announcements",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/announcements",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get announcement by uid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/announcements/93f12e6d-fde7-4d60-86cd-34593a61fc9a",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements",
+										"93f12e6d-fde7-4d60-86cd-34593a61fc9a"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		}
 	],
 	"auth": {

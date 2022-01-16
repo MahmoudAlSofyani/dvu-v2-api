@@ -50,14 +50,15 @@ exports.createAnnouncement = async (req, res, next) => {
   try {
     const { file } = req;
     const { title } = req.body;
+    const uid = uuidv4();
     let options = {
       logo: file,
-      url: title ? generateUrlSlug(title) : null,
+      url: title ? generateUrlSlug(title, uid, req, next) : null,
     };
 
     const _announcement = await Announcement.create(
       {
-        uid: uuidv4(),
+        uid,
         ...req.body,
       },
       options
@@ -77,7 +78,7 @@ exports.updateAnnouncementByUid = async (req, res, next) => {
     let options = {
       logo: file,
       individualHooks: true,
-      url: title ? generateUrlSlug(title) : null,
+      url: title ? generateUrlSlug(title, uid, req, next) : null,
     };
 
     const [count, [_updatedAnnouncement]] = await Announcement.update(

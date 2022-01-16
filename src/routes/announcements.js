@@ -14,36 +14,31 @@ const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { announcementsValidator } = require("../validators/announcements");
-const { _public, _protected } = require("../middlewares/roles");
+const { _ADMIN, _GENERAL, _VIP } = require("../middlewares/roles");
 
-router.get("/", verifyToken, permittedRoles(..._public), getAllAnnouncements);
-router.get(
-  "/:uid",
-  verifyToken,
-  permittedRoles(..._public),
-  getAnnouncementByUid
-);
+// ADMIN AUTHENTICATED ROUTES
+/**
+ * POST Create announcements            [*]
+ * PATCH Edit annoumcements             [*]
+ * DELETE bulk delete announcements     [*]
+ * POST Search announcements            [*]
+ */
 
-router.post(
-  "/search",
-  verifyToken,
-  permittedRoles(..._public),
-  searchAnnouncements
-);
 router.post(
   "/",
   singleImage,
   verifyToken,
-  permittedRoles(..._protected),
+  permittedRoles(..._ADMIN),
   announcementsValidator("create"),
   processValidationError,
   createAnnouncement
 );
+
 router.patch(
   "/:uid",
   singleImage,
   verifyToken,
-  permittedRoles(..._protected),
+  permittedRoles(..._ADMIN),
   announcementsValidator("update"),
   processValidationError,
   updateAnnouncementByUid
@@ -52,10 +47,36 @@ router.patch(
 router.delete(
   "/",
   verifyToken,
-  permittedRoles(..._protected),
+  permittedRoles(..._ADMIN),
   announcementsValidator("delete"),
   processValidationError,
   deleteAnnouncements
+);
+
+router.post(
+  "/search",
+  verifyToken,
+  permittedRoles(..._ADMIN),
+  searchAnnouncements
+);
+
+// AUTHENTICATED ACCESS ROUTES
+/**
+ * GET all announcments                 [*]
+ * GET announcement by uid              [*]
+ */
+
+router.get(
+  "/",
+  verifyToken,
+  permittedRoles(..._ADMIN, ..._GENERAL, ..._VIP),
+  getAllAnnouncements
+);
+router.get(
+  "/:uid",
+  verifyToken,
+  permittedRoles(..._ADMIN, ..._GENERAL, ..._VIP),
+  getAnnouncementByUid
 );
 
 module.exports = router;
