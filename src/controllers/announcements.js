@@ -1,10 +1,7 @@
 const { Announcement } = require("../db/models");
-const {
-  generateResponse,
-  generateCode,
-  generateUrlSlug,
-} = require("../helpers");
+const { generateResponse, generateUrlSlug } = require("../helpers");
 const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
 exports.searchAnnouncements = async (req, res, next) => {
   try {
@@ -19,9 +16,6 @@ exports.searchAnnouncements = async (req, res, next) => {
             case "search":
               searchClause = {
                 [Op.or]: [
-                  {
-                    code: { [Op.like]: `%${value}%` },
-                  },
                   {
                     title: { [Op.like]: `%${value}%` },
                   },
@@ -63,7 +57,7 @@ exports.createAnnouncement = async (req, res, next) => {
 
     const _announcement = await Announcement.create(
       {
-        code: await generateCode(req, next, "announcement"),
+        uid: uuidv4(),
         ...req.body,
       },
       options
@@ -74,9 +68,9 @@ exports.createAnnouncement = async (req, res, next) => {
   }
 };
 
-exports.updateAnnouncementByCode = async (req, res, next) => {
+exports.updateAnnouncementByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
     const { file } = req;
     const { title } = req.body;
 
@@ -88,7 +82,7 @@ exports.updateAnnouncementByCode = async (req, res, next) => {
 
     const [count, [_updatedAnnouncement]] = await Announcement.update(
       { ...req.body },
-      { ...options, where: { code } }
+      { ...options, where: { uid } }
     );
 
     if (_updatedAnnouncement) {
@@ -108,12 +102,12 @@ exports.updateAnnouncementByCode = async (req, res, next) => {
 
 exports.deleteAnnouncements = async (req, res, next) => {
   try {
-    const { codes } = req.body;
+    const { uids } = req.body;
 
     const _count = await Announcement.destroy({
       where: {
-        code: {
-          [Op.in]: codes,
+        uid: {
+          [Op.in]: uids,
         },
       },
     });
@@ -133,12 +127,12 @@ exports.getAllAnnouncements = async (req, res, next) => {
   }
 };
 
-exports.getAnnouncementByCode = async (req, res, next) => {
+exports.getAnnouncementByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
 
     const _announcement = await Announcement.scope("full").findOne({
-      where: { code },
+      where: { uid },
     });
 
     res.status(200).send(_announcement);

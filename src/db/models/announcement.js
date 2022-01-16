@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Announcement.init(
     {
-      code: DataTypes.STRING,
+      uid: DataTypes.STRING,
       title: DataTypes.STRING,
       details: DataTypes.TEXT,
       url: DataTypes.STRING,
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 
             if (logo) {
               const _poster = await sequelize.models.File.create({
-                code: logo.filename,
+                uid: logo.filename,
                 name: logo.originalname,
                 type: logo.mimetype,
                 size: logo.size,
@@ -62,11 +62,11 @@ module.exports = (sequelize, DataTypes) => {
             if (poster) {
               const _oldPoster = await announcement.getPoster();
 
-              deleteFile(_oldPoster.code);
+              deleteFile(_oldPoster.uid);
               await _oldPoster.destroy();
 
               const _newPoster = await sequelize.models.File.create({
-                code: poster.filename,
+                uid: poster.filename,
                 name: poster.originalname,
                 type: poster.mimetype,
                 size: poster.size,

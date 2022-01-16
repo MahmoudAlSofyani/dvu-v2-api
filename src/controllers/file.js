@@ -74,16 +74,16 @@ exports.multipleImage = (req, res, next) => {
 
 exports.streamFile = (req, res, next) => {
   try {
-    let { code } = req.params;
+    let { uid } = req.params;
 
-    if (code.includes(".")) {
-      let cleanedCode = code.split(".");
-      code = cleanedCode[0];
+    if (uid.includes(".")) {
+      let cleanedUid = uid.split(".");
+      uid = cleanedUid[0];
     }
 
-    File.findOne({ where: { code }, paranoid: false }).then((_data) => {
+    File.findOne({ where: { uid }, paranoid: false }).then((_data) => {
       if (_data) {
-        const path = `${__basedir}/uploads/${code}`;
+        const path = `${__basedir}/uploads/${uid}`;
         const stat = fs.statSync(path);
         const fileSize = stat.size;
         const range = req.headers.range;

@@ -2,11 +2,11 @@ const express = require("express");
 const {
   searchEvents,
   createEvent,
-  updateEventByCode,
+  updateEventByUid,
   deleteEvents,
   handleMemberRegisterToEvent,
   getAllEvents,
-  getEventByCode,
+  getEventByUid,
 } = require("../controllers/events");
 const { singleImage } = require("../controllers/file");
 const router = express.Router();
@@ -17,7 +17,7 @@ const {
 } = require("../utils/process-validation-errors");
 const { eventsValidator } = require("../validators/events");
 
-router.get("/:code", verifyToken, permittedRoles(_public), getEventByCode);
+router.get("/:uid", verifyToken, permittedRoles(_public), getEventByUid);
 router.get("/", verifyToken, permittedRoles(_public), getAllEvents);
 router.post(
   "/register",
@@ -35,12 +35,12 @@ router.post(
   createEvent
 );
 router.patch(
-  "/:code",
+  "/:uid",
   verifyToken,
   permittedRoles(_protected),
   eventsValidator("update"),
   processValidationError,
-  updateEventByCode
+  updateEventByUid
 );
 
 router.delete(

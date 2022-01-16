@@ -1,7 +1,7 @@
 const express = require("express");
 const {
-  getUserByCode,
-  updateUserByCode,
+  getUserByUid,
+  updateUserByUid,
   createUser,
   searchUsers,
   bulkUpdateUsersStatus,
@@ -10,34 +10,28 @@ const {
   deleteUserProfile,
 } = require("../controllers/users");
 const { verifyToken, permittedRoles } = require("../middlewares");
-const {
-  _ADMIN,
-  _GENERAL,
-  _VIP,
-} = require("../middlewares/roles");
+const { _ADMIN, _GENERAL, _VIP } = require("../middlewares/roles");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { usersValidator } = require("../validators/users");
 const router = express.Router();
 
-
-
 // ADMIN AUTHENTICATED ROUTES
 /**
-  * GET user by code           [*]
-  * PATCH update user by code  [*]
-  * PATCH Purge/Unpurge user   [*]
-  * POST Search Users          [*]
+ * GET user by uid           [*]
+ * PATCH update user by uid  [*]
+ * PATCH Purge/Unpurge user   [*]
+ * POST Search Users          [*]
  */
-router.get("/:code", verifyToken, permittedRoles(..._ADMIN), getUserByCode);
+router.get("/:uid", verifyToken, permittedRoles(..._ADMIN), getUserByUid);
 router.patch(
-  "/:code",
+  "/:uid",
   verifyToken,
   permittedRoles(..._ADMIN),
   usersValidator("update"),
   processValidationError,
-  updateUserByCode
+  updateUserByUid
 );
 router.patch(
   "/status/:isActive",

@@ -3,10 +3,10 @@ const { singleImage } = require("../controllers/file");
 const {
   searchAnnouncements,
   createAnnouncement,
-  updateAnnouncementByCode,
+  updateAnnouncementByUid,
   deleteAnnouncements,
   getAllAnnouncements,
-  getAnnouncementByCode,
+  getAnnouncementByUid,
 } = require("../controllers/announcements");
 const router = express.Router();
 const { verifyToken, permittedRoles } = require("../middlewares/index");
@@ -18,10 +18,10 @@ const { _public, _protected } = require("../middlewares/roles");
 
 router.get("/", verifyToken, permittedRoles(..._public), getAllAnnouncements);
 router.get(
-  "/:code",
+  "/:uid",
   verifyToken,
   permittedRoles(..._public),
-  getAnnouncementByCode
+  getAnnouncementByUid
 );
 
 router.post(
@@ -40,13 +40,13 @@ router.post(
   createAnnouncement
 );
 router.patch(
-  "/:code",
+  "/:uid",
   singleImage,
   verifyToken,
   permittedRoles(..._protected),
   announcementsValidator("update"),
   processValidationError,
-  updateAnnouncementByCode
+  updateAnnouncementByUid
 );
 
 router.delete(

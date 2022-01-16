@@ -7,7 +7,11 @@ exports.permittedRoles = (...roles) => {
   return (req, res, next) => {
     const { user } = req;
 
-    if (user && user.roles.some((_role) => roles.includes(_role.code))) next();
+    if (
+      user &&
+      user.roles.some((_role) => roles.includes(_role.name.toUpperCase()))
+    )
+      next();
     else generateResponse(null, req, next, 403, "general.forbidden");
   };
 };
@@ -20,13 +24,13 @@ exports.verifyToken = (req, res, next) => {
       jwt.verify(_token, process.env.JWT_SECRET_KEY, async (err, data) => {
         if (err) generateResponse(err, req, next, 401, "general.denied");
         else {
-          const { code } = data;
+          const { uid } = data;
 
           const _user = await User.findOne({
-            where: { code },
+            where: { uid },
             include: ["roles"],
           });
-          if (_user && _user.roles.some((_role) => _role.code !== "PURGED")) {
+          if (_user && _user.roles.some((_role) => _role.name !== "PURGED")) {
             req.user = _user;
             next();
           } else generateResponse(null, req, next, 401, "general.denied");

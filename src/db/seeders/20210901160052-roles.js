@@ -1,4 +1,5 @@
 "use strict";
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -16,32 +17,32 @@ module.exports = {
       [
         {
           id: 1,
-          code: "ADMIN",
+          uid: uuidv4(),
           name: "Admin",
         },
         {
           id: 2,
-          code: "MEMBER",
+          uid: uuidv4(),
           name: "Member",
         },
         {
           id: 3,
-          code: "PURGED",
+          uid: uuidv4(),
           name: "Purged",
         },
         {
           id: 4,
-          code: "WOLFSBURG",
+          uid: uuidv4(),
           name: "Wolfsburg",
         },
         {
           id: 5,
-          code: "SPONSOR",
+          uid: uuidv4(),
           name: "Sponsor",
         },
         {
           id: 6,
-          code: "LEGACY",
+          uid: uuidv4(),
           name: "Legacy Member",
         },
       ],

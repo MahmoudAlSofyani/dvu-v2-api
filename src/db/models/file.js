@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       this.hasOne(models.User, { foreignKey: "fileId" });
-      this.hasOne(models.Sponsor, { foreignKey: "fileId" });
       this.hasOne(models.Announcement, { foreignKey: "fileId" });
       this.belongsToMany(models.Advertisement, {
         through: models.AdvertisementFile,
@@ -29,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   File.init(
     {
-      code: DataTypes.STRING,
+      uid: DataTypes.STRING,
       name: DataTypes.STRING,
       type: DataTypes.STRING,
       size: DataTypes.INTEGER,

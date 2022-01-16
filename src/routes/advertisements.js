@@ -3,7 +3,7 @@ const { singleImage, multipleImage } = require("../controllers/file");
 const {
   searchAdvertisements,
   createAdvertisement,
-  updateAdvertisementByCode,
+  updateAdvertismentByUid,
   deleteAdvertisement,
 } = require("../controllers/advertisements");
 const { verifyToken, permittedRoles } = require("../middlewares/index");
@@ -30,13 +30,13 @@ router.post(
   createAdvertisement
 );
 router.patch(
-  "/:code",
+  "/:uid",
   multipleImage,
   verifyToken,
   permittedRoles(..._protected),
   advertisementsValidator("update"),
   processValidationError,
-  updateAdvertisementByCode
+  updateAdvertismentByUid
 );
 
 router.delete(

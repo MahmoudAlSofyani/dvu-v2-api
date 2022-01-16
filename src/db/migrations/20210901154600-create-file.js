@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      code: {
+      uid: {
         type: Sequelize.STRING,
         allowNull: false,
       },

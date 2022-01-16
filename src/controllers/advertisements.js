@@ -1,10 +1,7 @@
 const { Advertisement } = require("../db/models");
-const {
-  generateResponse,
-  generateCode,
-  generateUrlSlug,
-} = require("../helpers");
+const { generateResponse, generateUrlSlug } = require("../helpers");
 const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
 exports.searchAdvertisements = async (req, res, next) => {
   try {
@@ -20,7 +17,7 @@ exports.searchAdvertisements = async (req, res, next) => {
               searchClause = {
                 [Op.or]: [
                   {
-                    code: { [Op.like]: `%${value}%` },
+                    uid: { [Op.like]: `%${value}%` },
                   },
                   {
                     title: { [Op.like]: `%${value}%` },
@@ -63,7 +60,7 @@ exports.createAdvertisement = async (req, res, next) => {
 
     const _advertisement = await Advertisement.create(
       {
-        code: generateCode(req, next, "advertisement"),
+        uid: uuidv4(),
         userId: user.id,
         ...req.body,
       },
@@ -75,9 +72,9 @@ exports.createAdvertisement = async (req, res, next) => {
   }
 };
 
-exports.updateAdvertisementByCode = async (req, res, next) => {
+exports.updateAdvertismentByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
     const { files } = req;
     const { title, deletedImages } = req.body;
 
@@ -90,7 +87,7 @@ exports.updateAdvertisementByCode = async (req, res, next) => {
 
     const [count, [_updatedAdvertisement]] = await Advertisement.update(
       { ...req.body },
-      { ...options, where: { code } }
+      { ...options, where: { uid } }
     );
 
     if (_updatedAdvertisement) {
@@ -110,12 +107,12 @@ exports.updateAdvertisementByCode = async (req, res, next) => {
 
 exports.deleteAdvertisement = async (req, res, next) => {
   try {
-    const { codes } = req.body;
+    const { uids } = req.body;
 
     const _count = await Advertisement.destroy({
       where: {
-        code: {
-          [Op.in]: codes,
+        uid: {
+          [Op.in]: uids,
         },
       },
     });

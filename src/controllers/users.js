@@ -1,19 +1,13 @@
 const { User } = require("../db/models");
-const { generateResponse, generateCode, isUniqueUser } = require("../helpers");
+const { generateResponse, isUniqueUser } = require("../helpers");
 const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
-/**
- *
- * @param code req
- * @param {*} res
- * @param {*} next
- * @returns
- */
-exports.getUserByCode = async (req, res, next) => {
+exports.getUserByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
 
-    const _user = await User.scope("full").findOne({ where: { code } });
+    const _user = await User.scope("full").findOne({ where: { uid } });
 
     if (_user) return res.status(200).send(_user);
     else
@@ -59,13 +53,10 @@ exports.updateUserProfile = async (req, res, next) => {
 
     const options = {
       cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
+      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 
-    const _user = await User.findOne({ where: { code: user.code } });
+    const _user = await User.findOne({ where: { uid: user.uid } });
 
     if (_user) {
       for (const _attribute of Object.keys(req.body)) {
@@ -80,25 +71,22 @@ exports.updateUserProfile = async (req, res, next) => {
 };
 
 /**
- * PATCH Update user by code
+ * PATCH Update user by uid
  * ADMIN
  */
 
-exports.updateUserByCode = async (req, res, next) => {
+exports.updateUserByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
 
     const { cars } = req.body;
 
     const options = {
       cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
+      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 
-    const _user = await User.findOne({ where: { code } });
+    const _user = await User.findOne({ where: { uid } });
 
     if (_user) {
       for (const _attribute of Object.keys(req.body)) {
@@ -123,7 +111,7 @@ exports.deleteUserProfile = async (req, res, next) => {
 
     const _count = await User.destroy({
       where: {
-        code: user.code,
+        uid: user.uid,
       },
     });
 
@@ -147,16 +135,13 @@ exports.createUser = async (req, res, next) => {
       email,
       mobile,
       cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
+      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
       const _user = await User.create(
         {
-          code: generateCode(req, next, "user"),
+          uid: uuidv4(),
           ...req.body,
         },
         options
@@ -175,15 +160,15 @@ exports.createUser = async (req, res, next) => {
 
 exports.bulkUpdateUsersStatus = async (req, res, next) => {
   try {
-    const { codes } = req.body;
+    const { uids } = req.body;
     const { isActive } = req.params;
 
     const _count = await User.update(
       { isActive },
       {
         where: {
-          code: {
-            [Op.in]: codes,
+          uid: {
+            [Op.in]: uids,
           },
         },
         returning: true,
@@ -214,9 +199,6 @@ exports.searchUsers = async (req, res, next) => {
             case "search":
               searchClause = {
                 [Op.or]: [
-                  {
-                    code: { [Op.like]: `%${value}%` },
-                  },
                   {
                     firstName: { [Op.like]: `%${value}%` },
                   },
