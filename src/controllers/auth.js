@@ -80,4 +80,30 @@ exports.resetPassword = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
-exports.changePassword = async (req, res, next) => {};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { user } = req;
+    const { password, newPassword } = req.body;
+
+    if (user) {
+      const isValidPassword = bcrypt.compareSync(password, user.password);
+
+      if (isValidPassword) {
+        const options = { password: newPassword };
+        await user.save(options);
+
+        return res.status(200).send({ msg: "Password successfully changed" });
+      } else
+        generateResponse(
+          null,
+          req,
+          next,
+          403,
+          "validations.auth.passwordMismatch"
+        );
+    }
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};

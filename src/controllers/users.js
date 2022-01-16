@@ -1,20 +1,15 @@
 const { User } = require("../db/models");
-const {
-  generateResponse,
-  generateCode,
-  isUniqueUser,
-} = require("../helpers");
+const { generateResponse, generateCode, isUniqueUser } = require("../helpers");
 const { Op } = require("sequelize");
 
-
 /**
- * 
- * @param code req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ *
+ * @param code req
+ * @param {*} res
+ * @param {*} next
+ * @returns
  */
- exports.getUserByCode = async (req, res, next) => {
+exports.getUserByCode = async (req, res, next) => {
   try {
     const { code } = req.params;
 
@@ -33,7 +28,6 @@ const { Op } = require("sequelize");
     generateResponse(err, req, next);
   }
 };
-
 
 /**
  * GET user by token (profile)
@@ -54,16 +48,14 @@ exports.getUserProfile = async (req, res, next) => {
   }
 };
 
-
 /**
  * PATCH update user profile by token
  * ALL
  */
 exports.updateUserProfile = async (req, res, next) => {
   try {
-    
-    const {user} = req;
-    const {cars} = req.body
+    const { user } = req;
+    const { cars } = req.body;
 
     const options = {
       cars,
@@ -82,19 +74,17 @@ exports.updateUserProfile = async (req, res, next) => {
       await _user.save(options);
       return res.status(200).send(_user);
     } else generateResponse(null, req, next, 404, "validations.user.notFound");
-
   } catch (err) {
-    generateResponse(err, req, next)
+    generateResponse(err, req, next);
   }
-}
-
+};
 
 /**
  * PATCH Update user by code
  * ADMIN
  */
 
- exports.updateUserByCode = async (req, res, next) => {
+exports.updateUserByCode = async (req, res, next) => {
   try {
     const { code } = req.params;
 
@@ -129,29 +119,26 @@ exports.updateUserProfile = async (req, res, next) => {
 
 exports.deleteUserProfile = async (req, res, next) => {
   try {
-    
-    const {user} = req;
+    const { user } = req;
 
     const _count = await User.destroy({
       where: {
-        code: user.code
-      }
-    })
+        code: user.code,
+      },
+    });
 
-    res.status(200).send({count: _count})
-    
+    res.status(200).send({ count: _count });
   } catch (err) {
-    generateResponse(err, req, next)
+    generateResponse(err, req, next);
   }
-}
-
+};
 
 /**
  * POST Create new account/user
  * ALL
  */
 
- exports.createUser = async (req, res, next) => {
+exports.createUser = async (req, res, next) => {
   try {
     const { password, email, mobile, whatsApp, cars } = req.body;
 
@@ -181,16 +168,15 @@ exports.deleteUserProfile = async (req, res, next) => {
   }
 };
 
-
 /**
  * PATCH Update user account status
  * ADMIN
  */
 
- exports.bulkUpdateUsersStatus = async (req, res, next) => {
+exports.bulkUpdateUsersStatus = async (req, res, next) => {
   try {
     const { codes } = req.body;
-    const {isActive} = req.params;
+    const { isActive } = req.params;
 
     const _count = await User.update(
       { isActive },
@@ -269,12 +255,3 @@ exports.searchUsers = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
-
-
-
-
-
-
-
-
-

@@ -14,6 +14,8 @@ exports.en = {
       email: "Email required",
       password: "Password required",
       expiredToken: "Email expired. Please request a new one",
+      newPassword: "New password is required",
+      passwordMismatch: "Invalid old password",
     },
     sponsor: {
       name: "Name required",

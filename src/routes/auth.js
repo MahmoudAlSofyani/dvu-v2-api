@@ -1,13 +1,14 @@
 const express = require("express");
 const { login, resetPassword, changePassword } = require("../controllers/auth");
 const { sendResetPassword } = require("../controllers/emails");
+const { verifyToken } = require("../middlewares");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { authValidator } = require("../validators/auth");
 const router = express.Router();
 
-// Change Password  []
+// Change Password  [*]
 // Reset Password   [*]
 // Login            [*]
 
@@ -29,6 +30,7 @@ router.post(
 
 router.post(
   "/change-password",
+  verifyToken,
   authValidator("change-password"),
   processValidationError,
   changePassword

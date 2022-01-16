@@ -70,12 +70,6 @@ exports.authValidator = (action) => {
       ];
     case "change-password":
       return [
-        check("email")
-          .exists()
-          .withMessage("validations.auth.email")
-          .isString()
-          .not()
-          .isEmpty(),
         check("password")
           .exists()
           .withMessage("validations.auth.password")
