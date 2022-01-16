@@ -70,10 +70,15 @@ exports.createEvent = async (req, res, next) => {
 exports.updateEventByUid = async (req, res, next) => {
   try {
     const { uid } = req.params;
+    const { name } = req.body;
 
     const [count, [_updatedEvent]] = await Event.update(
       { ...req.body },
-      { individualHooks: true, where: { uid } }
+      {
+        url: name ? generateUrlSlug(name, uid, req, next) : null,
+        individualHooks: true,
+        where: { uid },
+      }
     );
 
     if (_updatedEvent) {
@@ -113,7 +118,7 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
         await _event.removeMember(user);
         return res
           .status(200)
-          .send({ msg: "You have successfully unregistered for this event" });
+          .send({ msg: "You have been removed from this event" });
       } else {
         await _event.addMember(user);
         return res
@@ -126,9 +131,11 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
   }
 };
 
-exports.getAllEvents = async (req, res, next) => {
+exports.getAllUpcomingEvents = async (req, res, next) => {
   try {
-    const _events = await Event.findAll({ include: ["members"] });
+    const _events = await Event.scope("upcoming").findAll({
+      include: ["members"],
+    });
 
     const _filteredEvents = _.chain(_events)
       .sortBy((_e) => _e.date)

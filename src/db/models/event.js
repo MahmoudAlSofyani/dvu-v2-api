@@ -1,5 +1,7 @@
 "use strict";
 const BaseModel = require("./base");
+const { Op } = require("sequelize");
+const moment = require("moment");
 module.exports = (sequelize, DataTypes) => {
   class Event extends BaseModel {
     PROTECTED_ATTRIBUTES = ["id", "createdAt", "updatedAt", "deletedAt"];
@@ -46,6 +48,13 @@ module.exports = (sequelize, DataTypes) => {
         full: {
           include: ["members"],
         },
+        upcoming: {
+          where: {
+            date: {
+              [Op.gte]: moment(),
+            },
+          },
+        },
       },
       hooks: {
         beforeCreate: async (event, options) => {
@@ -55,6 +64,14 @@ module.exports = (sequelize, DataTypes) => {
               coordinates: event.getDataValue("meetingLocation"),
             });
           }
+        },
+        beforeUpdate: async (event, options) => {
+          if (event && options) {
+            const { url } = options;
+
+            if (url) event.setDataValue("url", url);
+          }
+          return event;
         },
       },
     }

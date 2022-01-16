@@ -530,6 +530,189 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Admin Auth Routes",
+					"item": [
+						{
+							"name": "Create event",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Event 1\",\n    \"date\": \"2022-01-20\",\n    \"meetingLocation\": [10, 10],\n    \"meetingTime\": \"2022-01-20 10:30 AM\",\n    \"meetingName\": \"Al Nabooda Sharjah Volkswagen\",\n    \"details\": \"let's do this!\",\n    \"isMajor\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/events",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update event by uid",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Event 1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/events/b659eefd-56ff-4ff0-91a7-81b2dfe2a392",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events",
+										"b659eefd-56ff-4ff0-91a7-81b2dfe2a392"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Bulk delete events",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uids\": [\"b659eefd-56ff-4ff0-91a7-81b2dfe2a392\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/events",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search events",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"filters\": {\n        \"search\": \"\"\n    },\n    \"limit\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/events/search",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events",
+										"search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "General Auth Routes",
+					"item": [
+						{
+							"name": "Get event by uid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/events/b659eefd-56ff-4ff0-91a7-81b2dfe2a392",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events",
+										"b659eefd-56ff-4ff0-91a7-81b2dfe2a392"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all upcoming events",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/events",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register/Unregister for event",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uid\": \"b659eefd-56ff-4ff0-91a7-81b2dfe2a392\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/events/status",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		}
 	],
 	"auth": {
