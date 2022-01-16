@@ -713,6 +713,29 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Files",
+			"item": [
+				{
+					"name": "Stream file by uid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/files/f549b4619c956d2623e07477321f1db3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"files",
+								"f549b4619c956d2623e07477321f1db3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
