@@ -77,10 +77,11 @@ exports.updateUserByUid = async (req, res, next) => {
   try {
     const { uid } = req.params;
 
-    const { cars } = req.body;
+    const { cars, roles } = req.body;
 
     const options = {
       cars,
+      roles,
       carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 

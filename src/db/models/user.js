@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
     PROTECTED_ATTRIBUTES = [
       "id",
-      "createdAt",
       "updatedAt",
       "deletedAt",
       "password",
@@ -121,7 +120,18 @@ module.exports = (sequelize, DataTypes) => {
         },
         beforeUpdate: async (user, options) => {
           if (user && options) {
-            const { cars, carUids, password } = options;
+            const { cars, carUids, password, roles } = options;
+
+            if (roles && roles.length > 0) {
+              for (const _role of roles) {
+                const _r = await sequelize.models.Role.findOne({
+                  where: { name: _role },
+                });
+
+                if (await user.hasRole(_r)) user.removeRole(_r);
+                else user.addRole(_r);
+              }
+            }
 
             if (cars && cars.length > 0) {
               await sequelize.models.Car.bulkCreate(
