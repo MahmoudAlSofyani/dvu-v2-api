@@ -1,7 +1,7 @@
 "use strict";
 const BaseModel = require("./base");
 const bcrypt = require("bcrypt");
-
+const { Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
     PROTECTED_ATTRIBUTES = [
@@ -123,14 +123,17 @@ module.exports = (sequelize, DataTypes) => {
             const { cars, carUids, password, roles } = options;
 
             if (roles && roles.length > 0) {
-              for (const _role of roles) {
-                const _r = await sequelize.models.Role.findOne({
-                  where: { name: _role },
-                });
+              await user.setRoles([]);
 
-                if (await user.hasRole(_r)) user.removeRole(_r);
-                else user.addRole(_r);
-              }
+              const _roles = await sequelize.models.Role.findAll({
+                where: {
+                  uid: {
+                    [Op.in]: roles.map((_r) => _r.uid),
+                  },
+                },
+              });
+
+              await user.setRoles(_roles);
             }
 
             if (cars && cars.length > 0) {
