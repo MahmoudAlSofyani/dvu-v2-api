@@ -199,6 +199,9 @@ exports.searchUsers = async (req, res, next) => {
               searchClause = {
                 [Op.or]: [
                   {
+                    uid: { [Op.like]: `%${value}%` },
+                  },
+                  {
                     firstName: { [Op.like]: `%${value}%` },
                   },
                   {
