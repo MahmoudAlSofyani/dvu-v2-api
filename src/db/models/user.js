@@ -2,6 +2,7 @@
 const BaseModel = require("./base");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
+const { deleteFile } = require("../../helpers/delete-file");
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
     PROTECTED_ATTRIBUTES = [
@@ -122,7 +123,25 @@ module.exports = (sequelize, DataTypes) => {
         },
         beforeUpdate: async (user, options) => {
           if (user && options) {
-            const { cars, carUids, password, roles } = options;
+            const { cars, carUids, password, roles, profilePicture } = options;
+
+            if (profilePicture) {
+              const _oldPicture = await user.getProfilePicture();
+
+              if (_oldPicture) {
+                deleteFile(_oldPicture.uid);
+                await _oldPicture.destroy();
+              }
+
+              const _pic = await sequelize.models.File.create({
+                uid: profilePicture.filename,
+                name: profilePicture.originalname,
+                type: profilePicture.mimetype,
+                size: profilePicture.size,
+              });
+
+              if (_pic) await user.setProfilePicture(_pic);
+            }
 
             if (roles && roles.length > 0) {
               await user.setRoles([]);
