@@ -2,9 +2,16 @@
 const BaseModel = require("./base");
 const { Op } = require("sequelize");
 const moment = require("moment");
+const { deleteFile } = require("../../helpers/delete-file");
 module.exports = (sequelize, DataTypes) => {
   class Event extends BaseModel {
-    PROTECTED_ATTRIBUTES = ["id", "createdAt", "updatedAt", "deletedAt"];
+    PROTECTED_ATTRIBUTES = [
+      "id",
+      "createdAt",
+      "updatedAt",
+      "deletedAt",
+      "fileId",
+    ];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -19,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: "eventId",
         },
       });
+
+      this.belongsTo(models.File, { as: "poster", foreignKey: "fileId" });
     }
   }
   Event.init(
@@ -47,9 +56,10 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
       scopes: {
         full: {
-          include: ["members"],
+          include: ["members", "poster"],
         },
         upcoming: {
+          include: ["poster"],
           where: {
             date: {
               [Op.gte]: moment(),
@@ -66,11 +76,46 @@ module.exports = (sequelize, DataTypes) => {
             });
           }
         },
+        afterCreate: async (event, options) => {
+          if (event && options) {
+            const { poster } = options;
+
+            if (poster) {
+              const _pic = await sequelize.models.File.create({
+                uid: poster.filename,
+                name: poster.originalname,
+                type: poster.mimetype,
+                size: poster.size,
+              });
+
+              if (_pic) await event.setPoster(_pic);
+            }
+          }
+          return event;
+        },
         beforeUpdate: async (event, options) => {
           if (event && options) {
-            const { url } = options;
+            const { url, poster } = options;
 
             if (url) event.setDataValue("url", url);
+
+            if (poster) {
+              const _oldPicture = await event.getPoster();
+
+              if (_oldPicture) {
+                deleteFile(_oldPicture.uid);
+                await _oldPicture.destroy();
+              }
+
+              const _pic = await sequelize.models.File.create({
+                uid: poster.filename,
+                name: poster.originalname,
+                type: poster.mimetype,
+                size: poster.size,
+              });
+
+              if (_pic) await event.setPoster(_pic);
+            }
           }
           return event;
         },
