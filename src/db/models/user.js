@@ -55,6 +55,8 @@ module.exports = (sequelize, DataTypes) => {
       instagram: DataTypes.STRING,
       points: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
+      mobileCountryCode: DataTypes.STRING,
+      whatsappCountryCode: DataTypes.STRING,
     },
     {
       sequelize,

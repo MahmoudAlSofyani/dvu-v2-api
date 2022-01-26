@@ -42,6 +42,19 @@ exports.usersValidator = (action) => {
           .isString()
           .not()
           .isEmpty(),
+        check("mobileCountryCode")
+          .exists()
+          .withMessage("validations.user.mobileCountryCode")
+          .not()
+          .isEmpty()
+          .isString(),
+        check("whatsappCountryCode")
+          .if(check("whatsApp").exists().not().isEmpty())
+          .exists()
+          .withMessage("validations.user.whatsappCountryCode")
+          .not()
+          .isEmpty()
+          .isString(),
       ];
     case "update-user-status":
       return [
