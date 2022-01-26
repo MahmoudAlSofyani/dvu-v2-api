@@ -36,7 +36,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"lastName\": \"AlSofyani\"\n}",
+									"raw": "{\n    \"roles\": [\n        {\n            \"uid\": \"b4939db1-4557-4796-90a3-57677bda69cd\",\n            \"name\": \"Member\"\n        }\n    ]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -44,13 +44,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/users/a20d3649-a6d5-43db-ad8e-8fcc3b492e8a",
+									"raw": "{{url}}/users/6fcb697c-febd-4631-a9a8-74a1ad9c9c95",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"users",
-										"a20d3649-a6d5-43db-ad8e-8fcc3b492e8a"
+										"6fcb697c-febd-4631-a9a8-74a1ad9c9c95"
 									]
 								}
 							},
@@ -638,6 +638,25 @@
 									"path": [
 										"events",
 										"search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Publish/Unpublish Event",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/events/visibility/XXXX",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events",
+										"visibility",
+										"XXXX"
 									]
 								}
 							},

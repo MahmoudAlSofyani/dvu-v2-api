@@ -7,6 +7,7 @@ const {
   handleMemberRegisterToEvent,
   getEventByUid,
   getAllUpcomingEvents,
+  handleEventVisibility,
 } = require("../controllers/events");
 const router = express.Router();
 const { verifyToken, permittedRoles } = require("../middlewares/index");
@@ -51,6 +52,13 @@ router.delete(
 );
 
 router.post("/search", verifyToken, permittedRoles(..._ADMIN), searchEvents);
+
+router.patch(
+  "/visibility/:uid",
+  verifyToken,
+  permittedRoles(..._ADMIN),
+  handleEventVisibility
+);
 
 // AUTHENTICATED ACCESS ROUTES
 /**

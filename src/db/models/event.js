@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       details: DataTypes.TEXT,
       isMajor: DataTypes.BOOLEAN,
       url: DataTypes.STRING,
+      isPublished: DataTypes.BOOLEAN,
     },
     {
       sequelize,

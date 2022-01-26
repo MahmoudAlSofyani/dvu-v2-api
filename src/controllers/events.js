@@ -160,3 +160,19 @@ exports.getEventByUid = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
+
+exports.handleEventVisibility = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const _event = await Event.findOne({ where: { uid } });
+
+    if (_event) {
+      _event.isPublished = !_event.isPublished;
+      await _event.save();
+      return res.status(200).send(_event);
+    } else generateResponse(null, req, next, 404, "validations.event.notFound");
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
