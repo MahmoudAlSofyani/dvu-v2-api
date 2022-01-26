@@ -9,6 +9,8 @@ exports.en = {
       whatsApp: "WhatsApp Required",
       notFound: "User not found",
       notUnique: "User already exists",
+      mobileCountryCode: "Country code required",
+      whatsappCountryCode: "Country code required",
     },
     auth: {
       email: "Email required",
