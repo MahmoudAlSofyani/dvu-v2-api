@@ -1,4 +1,5 @@
 const express = require("express");
+const { singleImage } = require("../controllers/file");
 const {
   getUserByUid,
   updateUserByUid,
@@ -27,6 +28,7 @@ const router = express.Router();
 router.get("/:uid", verifyToken, permittedRoles(..._ADMIN), getUserByUid);
 router.patch(
   "/:uid",
+  singleImage,
   verifyToken,
   permittedRoles(..._ADMIN),
   usersValidator("update"),
@@ -57,6 +59,7 @@ router.get(
 );
 router.patch(
   "/",
+  singleImage,
   verifyToken,
   permittedRoles(..._GENERAL, ..._VIP),
   updateUserProfile

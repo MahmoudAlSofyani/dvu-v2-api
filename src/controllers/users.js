@@ -36,6 +36,9 @@ exports.getUserProfile = async (req, res, next) => {
       ...user.toJSON(),
       cars: await user.getCars(),
       roles: await user.getRoles(),
+      events: await user.getEvents(),
+      advertisements: await user.getAdvertisements(),
+      profilePicture: await user.getProfilePicture(),
     });
   } catch (err) {
     generateResponse(err, req, next);
@@ -48,10 +51,11 @@ exports.getUserProfile = async (req, res, next) => {
  */
 exports.updateUserProfile = async (req, res, next) => {
   try {
-    const { user } = req;
+    const { user, file } = req;
     const { cars } = req.body;
 
     const options = {
+      profilePicture: file,
       cars,
       carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
@@ -76,10 +80,12 @@ exports.updateUserProfile = async (req, res, next) => {
 exports.updateUserByUid = async (req, res, next) => {
   try {
     const { uid } = req.params;
+    const { file } = req;
 
     const { cars, roles } = req.body;
 
     const options = {
+      profilePicture: file,
       cars,
       roles,
       carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
