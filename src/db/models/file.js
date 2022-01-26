@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         through: models.AdvertisementFile,
         foreignKey: "fileId",
       });
+      this.hasOne(models.Event, { foreignKey: "fileId" });
     }
   }
   File.init(
