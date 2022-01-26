@@ -37,7 +37,7 @@ module.exports = {
           last_name: "Sponsor",
           email: "sponsor@volkskreisuae.com",
           password: bcrypt.hashSync("password", 12),
-          mobile: "+555555555",
+          mobile: "555555555",
           points: 100,
           is_active: true,
           mobile_country_code: "971",
