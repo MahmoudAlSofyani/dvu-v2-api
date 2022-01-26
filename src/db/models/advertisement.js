@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Advertisement.init(
     {
-      code: DataTypes.STRING,
+      uid: DataTypes.STRING,
       title: DataTypes.STRING,
       price: DataTypes.INTEGER,
       description: DataTypes.TEXT,
@@ -41,12 +41,24 @@ module.exports = (sequelize, DataTypes) => {
             "images",
             {
               association: "user",
-              attributes: ["code", "firstName", "lastName"],
+              attributes: ["uid", "firstName", "lastName"],
             },
           ],
         },
         images: {
           include: ["images"],
+        },
+        isVerified: {
+          where: {
+            isVerified: true,
+          },
+          include: [
+            "images",
+            {
+              association: "user",
+              attributes: ["uid", "firstName", "lastName"],
+            },
+          ],
         },
       },
       hooks: {
@@ -65,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
             if (images && images.length > 0) {
               const _images = await sequelize.models.File.bulkCreate(
                 images.map((_image) => ({
-                  code: _image.filename,
+                  uid: _image.filename,
                   name: _image.originalname,
                   type: _image.mimetype,
                   size: _image.size,
@@ -87,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
             if (images && images.length > 0) {
               const _images = await sequelize.models.File.bulkCreate(
                 images.map((_image) => ({
-                  code: _image.filename,
+                  uid: _image.filename,
                   name: _image.originalname,
                   type: _image.mimetype,
                   size: _image.size,
@@ -104,7 +116,7 @@ module.exports = (sequelize, DataTypes) => {
               if (deletedImages.length > 0) {
                 const _deletedImages = await sequelize.models.File.findAll({
                   where: {
-                    code: {
+                    uid: {
                       [Op.in]: deletedImages,
                     },
                   },
@@ -113,7 +125,7 @@ module.exports = (sequelize, DataTypes) => {
                 if (_deletedImages) {
                   await advertisement.removeImages(_deletedImages);
                   for (const _deletedImage of _deletedImages) {
-                    deleteFile(_deletedImage.code);
+                    deleteFile(_deletedImage.uid);
                     await _deletedImage.destroy();
                   }
                 }

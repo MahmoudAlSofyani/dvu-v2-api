@@ -1,12 +1,9 @@
 const { Event } = require("../db/models");
-const {
-  generateResponse,
-  generateCode,
-  generateUrlSlug,
-} = require("../helpers");
+const { generateResponse, generateUrlSlug } = require("../helpers");
 const { Op } = require("sequelize");
 const _ = require("lodash");
 const moment = require("moment");
+const { v4: uuidv4 } = require("uuid");
 
 exports.searchEvents = async (req, res, next) => {
   try {
@@ -21,9 +18,6 @@ exports.searchEvents = async (req, res, next) => {
             case "search":
               searchClause = {
                 [Op.or]: [
-                  {
-                    code: { [Op.like]: `%${value}%` },
-                  },
                   {
                     name: { [Op.like]: `%${value}%` },
                   },
@@ -60,11 +54,11 @@ exports.searchEvents = async (req, res, next) => {
 exports.createEvent = async (req, res, next) => {
   try {
     const { name } = req.body;
-    const code = await generateCode(req, next, "event");
+    const uid = uuidv4();
 
     const _event = await Event.create({
-      code,
-      url: generateUrlSlug(name, code, req, next),
+      uid,
+      url: generateUrlSlug(name, uid, req, next),
       ...req.body,
     });
     res.status(200).send(_event);
@@ -73,13 +67,18 @@ exports.createEvent = async (req, res, next) => {
   }
 };
 
-exports.updateEventByCode = async (req, res, next) => {
+exports.updateEventByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
+    const { name } = req.body;
 
     const [count, [_updatedEvent]] = await Event.update(
       { ...req.body },
-      { individualHooks: true, where: { code } }
+      {
+        url: name ? generateUrlSlug(name, uid, req, next) : null,
+        individualHooks: true,
+        where: { uid },
+      }
     );
 
     if (_updatedEvent) {
@@ -92,12 +91,12 @@ exports.updateEventByCode = async (req, res, next) => {
 
 exports.deleteEvents = async (req, res, next) => {
   try {
-    const { codes } = req.body;
+    const { uids } = req.body;
 
     const _count = await Event.destroy({
       where: {
-        code: {
-          [Op.in]: codes,
+        uid: {
+          [Op.in]: uids,
         },
       },
     });
@@ -110,16 +109,16 @@ exports.deleteEvents = async (req, res, next) => {
 exports.handleMemberRegisterToEvent = async (req, res, next) => {
   try {
     const { user } = req;
-    const { code } = req.body;
+    const { uid } = req.body;
 
-    const _event = await Event.findOne({ where: { code } });
+    const _event = await Event.findOne({ where: { uid } });
 
     if (_event) {
       if (await _event.hasMember(user)) {
         await _event.removeMember(user);
         return res
           .status(200)
-          .send({ msg: "You have successfully unregistered for this event" });
+          .send({ msg: "You have been removed from this event" });
       } else {
         await _event.addMember(user);
         return res
@@ -132,9 +131,11 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
   }
 };
 
-exports.getAllEvents = async (req, res, next) => {
+exports.getAllUpcomingEvents = async (req, res, next) => {
   try {
-    const _events = await Event.findAll({ include: ["members"] });
+    const _events = await Event.scope("upcoming").findAll({
+      include: ["members"],
+    });
 
     const _filteredEvents = _.chain(_events)
       .sortBy((_e) => _e.date)
@@ -146,15 +147,31 @@ exports.getAllEvents = async (req, res, next) => {
   }
 };
 
-exports.getEventByCode = async (req, res, next) => {
+exports.getEventByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
 
     const _event = await Event.scope("full").findOne({
-      where: { code },
+      where: { uid },
     });
 
     res.status(200).send(_event);
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.handleEventVisibility = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const _event = await Event.findOne({ where: { uid } });
+
+    if (_event) {
+      _event.isPublished = !_event.isPublished;
+      await _event.save();
+      return res.status(200).send(_event);
+    } else generateResponse(null, req, next, 404, "validations.event.notFound");
   } catch (err) {
     generateResponse(err, req, next);
   }

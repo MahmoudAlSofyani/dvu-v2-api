@@ -1,4 +1,4 @@
-const { check } = require("express-validator");
+const { check, param } = require("express-validator");
 
 exports.authValidator = (action) => {
   switch (action) {
@@ -46,6 +46,39 @@ exports.authValidator = (action) => {
         check("mobile")
           .exists()
           .withMessage("validations.auth.mobile")
+          .isString()
+          .not()
+          .isEmpty(),
+      ];
+    case "reset-password":
+      return [
+        check("email")
+          .exists()
+          .withMessage("validations.auth.email")
+          .isString()
+          .not()
+          .isEmpty(),
+      ];
+    case "reset-password-with-token":
+      return [
+        check("password")
+          .exists()
+          .withMessage("validations.auth.password")
+          .isString()
+          .not()
+          .isEmpty(),
+      ];
+    case "change-password":
+      return [
+        check("password")
+          .exists()
+          .withMessage("validations.auth.password")
+          .isString()
+          .not()
+          .isEmpty(),
+        check("newPassword")
+          .exists()
+          .withMessage("validations.auth.newPassword")
           .isString()
           .not()
           .isEmpty(),

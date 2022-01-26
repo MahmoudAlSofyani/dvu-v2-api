@@ -1,7 +1,7 @@
 "use strict";
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
-  class PostFile extends BaseModel {
+  class PasswordResetToken extends BaseModel {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,21 +9,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.File, { foreignKey: "fileId" });
-      this.belongsTo(models.Post, { foreignKey: "postId" });
+
+      this.belongsTo(models.User, { as: "resetToken", foreignKey: "userId" });
     }
   }
-  PostFile.init(
+  PasswordResetToken.init(
     {
-      postId: DataTypes.INTEGER,
-      fileId: DataTypes.INTEGER,
+      uid: DataTypes.STRING,
+      token: DataTypes.STRING,
+      tokenExpiry: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "PostFile",
+      modelName: "PasswordResetToken",
+      paranoid: true,
       underscored: true,
-      timestamps: false,
     }
   );
-  return PostFile;
+  return PasswordResetToken;
 };

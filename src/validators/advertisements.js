@@ -25,18 +25,18 @@ exports.advertisementsValidator = (action) => {
       ];
     case "update":
       return [
-        param("code")
+        param("uid")
           .exists()
-          .withMessage("general.code")
+          .withMessage("general.uid")
           .not()
           .isEmpty()
           .isString(),
       ];
     case "delete":
       return [
-        check("codes")
+        check("uids")
           .exists()
-          .withMessage("general.codes")
+          .withMessage("general.uids")
           .not()
           .isEmpty()
           .isArray(),

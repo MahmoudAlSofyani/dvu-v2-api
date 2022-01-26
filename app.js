@@ -22,13 +22,11 @@ const app = express();
 
 const usersRouter = require("./src/routes/users");
 const authRouter = require("./src/routes/auth");
-// const sponsorsRouter = require("./src/routes/sponsors");
-// const eventsRouter = require("./src/routes/events");
-// const announcementsRouter = require("./src/routes/announcements");
-// const advertisementsRouter = require("./src/routes/advertisements");
-// const postsRouter = require("./src/routes/posts");
-// const commentsRouter = require("./src/routes/comments");
-// const filesRouter = require("./src/routes/files");
+const eventsRouter = require("./src/routes/events");
+const announcementsRouter = require("./src/routes/announcements");
+const advertisementsRouter = require("./src/routes/advertisements");
+const filesRouter = require("./src/routes/files");
+const rolesRouter = require("./src/routes/roles");
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -98,13 +96,11 @@ app.use(function (req, res, next) {
 
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
-// app.use("/api/sponsors", sponsorsRouter);
-// app.use("/api/events", eventsRouter);
-// app.use("/api/announcements", announcementsRouter);
-// app.use("/api/advertisements", advertisementsRouter);
-// app.use("/api/posts", postsRouter);
-// app.use("/api/comments", commentsRouter);
-// app.use("/api/files", filesRouter);
+app.use("/api/events", eventsRouter);
+app.use("/api/announcements", announcementsRouter);
+app.use("/api/advertisements", advertisementsRouter);
+app.use("/api/files", filesRouter);
+app.use("/api/roles", rolesRouter);
 
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");

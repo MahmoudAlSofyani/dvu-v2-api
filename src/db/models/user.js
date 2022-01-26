@@ -1,12 +1,11 @@
 "use strict";
 const BaseModel = require("./base");
 const bcrypt = require("bcrypt");
-
+const { Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
     PROTECTED_ATTRIBUTES = [
       "id",
-      "createdAt",
       "updatedAt",
       "deletedAt",
       "password",
@@ -41,13 +40,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
 
-      this.hasMany(models.Comment, { foreignKey: "userId" });
-      this.hasMany(models.Post, { foreignKey: "userId" });
+      this.hasMany(models.PasswordResetToken, { foreignKey: "userId" });
     }
   }
   User.init(
     {
-      code: DataTypes.STRING,
+      uid: DataTypes.STRING,
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       email: DataTypes.STRING,
@@ -101,17 +99,17 @@ module.exports = (sequelize, DataTypes) => {
         },
         afterCreate: async (user, options) => {
           if (user && options) {
-            const { cars, carCodes } = options;
+            const { cars, carUids } = options;
 
             const _memberRole = await sequelize.models.Role.findOne({
-              where: { code: "MEMBER" },
+              where: { name: "MEMBER" },
             });
             if (_memberRole) user.addRole(_memberRole);
 
             if (cars && cars.length > 0) {
               await sequelize.models.Car.bulkCreate(
                 cars.map((_car, index) => ({
-                  code: carCodes[index],
+                  uid: carUids[index],
                   userId: user.id,
                   ..._car,
                 }))
@@ -122,16 +120,34 @@ module.exports = (sequelize, DataTypes) => {
         },
         beforeUpdate: async (user, options) => {
           if (user && options) {
-            const { cars, carCodes } = options;
+            const { cars, carUids, password, roles } = options;
+
+            if (roles && roles.length > 0) {
+              await user.setRoles([]);
+
+              const _roles = await sequelize.models.Role.findAll({
+                where: {
+                  uid: {
+                    [Op.in]: roles.map((_r) => _r.uid),
+                  },
+                },
+              });
+
+              await user.setRoles(_roles);
+            }
 
             if (cars && cars.length > 0) {
               await sequelize.models.Car.bulkCreate(
                 cars.map((_car, index) => ({
-                  code: carCodes[index],
+                  uid: carUids[index],
                   userId: user.id,
                   ..._car,
                 }))
               );
+            }
+
+            if (password) {
+              user.setDataValue("password", bcrypt.hashSync(password, 12));
             }
           }
         },

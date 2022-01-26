@@ -1,28 +1,24 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("comments", {
+    await queryInterface.createTable("password_reset_tokens", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      code: {
+      uid: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      details: {
-        type: Sequelize.TEXT,
+      token: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
-      post_id: {
-        type: Sequelize.INTEGER,
+      token_expiry: {
+        type: Sequelize.DATE,
         allowNull: false,
-        references: {
-          model: "posts",
-          key: "id",
-        },
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -51,6 +47,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("comments");
+    await queryInterface.dropTable("password_reset_tokens");
   },
 };

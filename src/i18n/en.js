@@ -13,12 +13,12 @@ exports.en = {
     auth: {
       email: "Email required",
       password: "Password required",
+      expiredToken: "Email expired. Please request a new one",
+      newPassword: "New password is required",
+      passwordMismatch: "Invalid old password",
     },
-    sponsor: {
-      name: "Name required",
-      description: "Description required",
-      logo: "Logo required",
-      notFound: "Sponsor not found",
+    advertisment: {
+      notFound: "Advertisment not found",
     },
   },
   general: {
@@ -31,8 +31,8 @@ exports.en = {
     notEmail: "Invalid email",
     empty: "Empty value is not allowed",
     notActive: "Your account is not activated yet",
-    code: "Code is required",
-    codes: "Atleast one code is required",
+    uid: "UID is required",
+    uids: "At least one UID is required",
     fileUploadError: "You must upload an image",
     forbidden: "You are not authorized",
   },

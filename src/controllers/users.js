@@ -1,24 +1,13 @@
 const { User } = require("../db/models");
-const {
-  generateResponse,
-  generateCode,
-  isUniqueUser,
-} = require("../helpers");
+const { generateResponse, isUniqueUser } = require("../helpers");
 const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
-
-/**
- * 
- * @param code req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
- */
- exports.getUserByCode = async (req, res, next) => {
+exports.getUserByUid = async (req, res, next) => {
   try {
-    const { code } = req.params;
+    const { uid } = req.params;
 
-    const _user = await User.scope("full").findOne({ where: { code } });
+    const _user = await User.scope("full").findOne({ where: { uid } });
 
     if (_user) return res.status(200).send(_user);
     else
@@ -33,7 +22,6 @@ const { Op } = require("sequelize");
     generateResponse(err, req, next);
   }
 };
-
 
 /**
  * GET user by token (profile)
@@ -54,61 +42,50 @@ exports.getUserProfile = async (req, res, next) => {
   }
 };
 
-
 /**
  * PATCH update user profile by token
  * ALL
  */
 exports.updateUserProfile = async (req, res, next) => {
   try {
-    
-    const {user} = req;
-    const {cars} = req.body
-
-    const options = {
-      cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
-    };
-
-    const _user = await User.findOne({ where: { code: user.code } });
-
-    if (_user) {
-      for (const _attribute of Object.keys(req.body)) {
-        _user[_attribute] = req.body[_attribute];
-      }
-      await _user.save(options);
-      return res.status(200).send(_user);
-    } else generateResponse(null, req, next, 404, "validations.user.notFound");
-
-  } catch (err) {
-    generateResponse(err, req, next)
-  }
-}
-
-
-/**
- * PATCH Update user by code
- * ADMIN
- */
-
- exports.updateUserByCode = async (req, res, next) => {
-  try {
-    const { code } = req.params;
-
+    const { user } = req;
     const { cars } = req.body;
 
     const options = {
       cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
+      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 
-    const _user = await User.findOne({ where: { code } });
+    if (user) {
+      for (const _attribute of Object.keys(req.body)) {
+        user[_attribute] = req.body[_attribute];
+      }
+      await user.save(options);
+      return res.status(200).send(user);
+    } else generateResponse(null, req, next, 404, "validations.user.notFound");
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+/**
+ * PATCH Update user by uid
+ * ADMIN
+ */
+
+exports.updateUserByUid = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const { cars, roles } = req.body;
+
+    const options = {
+      cars,
+      roles,
+      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
+    };
+
+    const _user = await User.findOne({ where: { uid } });
 
     if (_user) {
       for (const _attribute of Object.keys(req.body)) {
@@ -129,29 +106,26 @@ exports.updateUserProfile = async (req, res, next) => {
 
 exports.deleteUserProfile = async (req, res, next) => {
   try {
-    
-    const {user} = req;
+    const { user } = req;
 
     const _count = await User.destroy({
       where: {
-        code: user.code
-      }
-    })
+        uid: user.uid,
+      },
+    });
 
-    res.status(200).send({count: _count})
-    
+    res.status(200).send({ count: _count });
   } catch (err) {
-    generateResponse(err, req, next)
+    generateResponse(err, req, next);
   }
-}
-
+};
 
 /**
  * POST Create new account/user
  * ALL
  */
 
- exports.createUser = async (req, res, next) => {
+exports.createUser = async (req, res, next) => {
   try {
     const { password, email, mobile, whatsApp, cars } = req.body;
 
@@ -160,16 +134,13 @@ exports.deleteUserProfile = async (req, res, next) => {
       email,
       mobile,
       cars,
-      carCodes:
-        cars &&
-        cars.length > 0 &&
-        cars.map((_car) => generateCode(req, next, "car")),
+      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {
       const _user = await User.create(
         {
-          code: generateCode(req, next, "user"),
+          uid: uuidv4(),
           ...req.body,
         },
         options
@@ -181,23 +152,22 @@ exports.deleteUserProfile = async (req, res, next) => {
   }
 };
 
-
 /**
  * PATCH Update user account status
  * ADMIN
  */
 
- exports.bulkUpdateUsersStatus = async (req, res, next) => {
+exports.bulkUpdateUsersStatus = async (req, res, next) => {
   try {
-    const { codes } = req.body;
-    const {isActive} = req.params;
+    const { uids } = req.body;
+    const { isActive } = req.params;
 
     const _count = await User.update(
       { isActive },
       {
         where: {
-          code: {
-            [Op.in]: codes,
+          uid: {
+            [Op.in]: uids,
           },
         },
         returning: true,
@@ -229,7 +199,7 @@ exports.searchUsers = async (req, res, next) => {
               searchClause = {
                 [Op.or]: [
                   {
-                    code: { [Op.like]: `%${value}%` },
+                    uid: { [Op.like]: `%${value}%` },
                   },
                   {
                     firstName: { [Op.like]: `%${value}%` },
@@ -269,12 +239,3 @@ exports.searchUsers = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
-
-
-
-
-
-
-
-
-

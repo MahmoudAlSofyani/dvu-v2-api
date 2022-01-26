@@ -2,54 +2,88 @@ const express = require("express");
 const {
   searchEvents,
   createEvent,
-  updateEventByCode,
+  updateEventByUid,
   deleteEvents,
   handleMemberRegisterToEvent,
-  getAllEvents,
-  getEventByCode,
+  getEventByUid,
+  getAllUpcomingEvents,
+  handleEventVisibility,
 } = require("../controllers/events");
-const { singleImage } = require("../controllers/file");
 const router = express.Router();
 const { verifyToken, permittedRoles } = require("../middlewares/index");
-const { _public, _protected } = require("../middlewares/roles");
+const { _GENERAL, _ADMIN, _VIP } = require("../middlewares/roles");
 const {
   processValidationError,
 } = require("../utils/process-validation-errors");
 const { eventsValidator } = require("../validators/events");
 
-router.get("/:code", verifyToken, permittedRoles(_public), getEventByCode);
-router.get("/", verifyToken, permittedRoles(_public), getAllEvents);
-router.post(
-  "/register",
-  verifyToken,
-  permittedRoles(_public),
-  handleMemberRegisterToEvent
-);
-router.post("/search", permittedRoles(_public), searchEvents);
+// ADMIN AUTHENTICATED ROUTES
+/**
+ * POST Create event                [*]
+ * PATCH update event by uid        [*]
+ * DELETE bulk delete events by uid [*]
+ * POST Search events               [*]
+ */
 router.post(
   "/",
   verifyToken,
-  permittedRoles(_protected),
+  permittedRoles(..._ADMIN),
   eventsValidator("create"),
   processValidationError,
   createEvent
 );
+
 router.patch(
-  "/:code",
+  "/:uid",
   verifyToken,
-  permittedRoles(_protected),
+  permittedRoles(..._ADMIN),
   eventsValidator("update"),
   processValidationError,
-  updateEventByCode
+  updateEventByUid
 );
 
 router.delete(
   "/",
   verifyToken,
-  permittedRoles(_protected),
+  permittedRoles(..._ADMIN),
   eventsValidator("delete"),
   processValidationError,
   deleteEvents
+);
+
+router.post("/search", verifyToken, permittedRoles(..._ADMIN), searchEvents);
+
+router.patch(
+  "/visibility/:uid",
+  verifyToken,
+  permittedRoles(..._ADMIN),
+  handleEventVisibility
+);
+
+// AUTHENTICATED ACCESS ROUTES
+/**
+ * GET All upcoming events          [*]
+ * GET event by uid                 [*]
+ * POST Register/unregister         [*]
+ */
+
+router.get(
+  "/:uid",
+  verifyToken,
+  permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
+  getEventByUid
+);
+router.get(
+  "/",
+  verifyToken,
+  permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
+  getAllUpcomingEvents
+);
+router.post(
+  "/status",
+  verifyToken,
+  permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
+  handleMemberRegisterToEvent
 );
 
 module.exports = router;
