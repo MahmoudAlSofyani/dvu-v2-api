@@ -141,3 +141,26 @@ exports.getAnnouncementByUid = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
+
+exports.handleAnnouncementsVisibility = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const _announcement = await Announcement.findOne({ where: { uid } });
+
+    if (_announcement) {
+      _announcement.isPublished = !_announcement.isPublished;
+      await _announcement.save();
+      return res.status(200).send(_announcement);
+    } else
+      generateResponse(
+        null,
+        req,
+        next,
+        404,
+        "validations.announcement.notFound"
+      );
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
