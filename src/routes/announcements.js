@@ -7,6 +7,7 @@ const {
   deleteAnnouncements,
   getAllAnnouncements,
   getAnnouncementByUid,
+  handleAnnouncementsVisibility,
 } = require("../controllers/announcements");
 const router = express.Router();
 const { verifyToken, permittedRoles } = require("../middlewares/index");
@@ -58,6 +59,13 @@ router.post(
   verifyToken,
   permittedRoles(..._ADMIN),
   searchAnnouncements
+);
+
+router.patch(
+  "/visibility/:uid",
+  verifyToken,
+  permittedRoles(..._ADMIN),
+  handleAnnouncementsVisibility
 );
 
 // AUTHENTICATED ACCESS ROUTES
