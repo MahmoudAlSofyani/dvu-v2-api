@@ -25,7 +25,7 @@ module.exports = {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       meeting_location: {
-        type: Sequelize.GEOMETRY,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       meeting_name: {
