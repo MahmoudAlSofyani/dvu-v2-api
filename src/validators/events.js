@@ -21,7 +21,7 @@ exports.eventsValidator = (action) => {
           .withMessage("validations.event.meetingLocation")
           .not()
           .isEmpty()
-          .isArray(),
+          .isURL(),
         check("meetingTime")
           .exists()
           .withMessage("validations.event.meetingTime")
