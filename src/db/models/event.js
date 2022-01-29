@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       isMajor: DataTypes.BOOLEAN,
       url: DataTypes.STRING,
       isPublished: DataTypes.BOOLEAN,
+      whatsappLink: DataTypes.STRING,
     },
     {
       sequelize,
