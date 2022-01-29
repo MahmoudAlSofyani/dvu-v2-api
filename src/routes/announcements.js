@@ -27,7 +27,7 @@ const { _ADMIN, _GENERAL, _VIP } = require("../middlewares/roles");
 
 router.post(
   "/",
-  singleImage,
+  singleImage(false),
   verifyToken,
   permittedRoles(..._ADMIN),
   announcementsValidator("create"),
@@ -37,7 +37,7 @@ router.post(
 
 router.patch(
   "/:uid",
-  singleImage,
+  singleImage(false),
   verifyToken,
   permittedRoles(..._ADMIN),
   announcementsValidator("update"),

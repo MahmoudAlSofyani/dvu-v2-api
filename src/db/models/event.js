@@ -35,13 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       uid: DataTypes.STRING,
       name: DataTypes.STRING,
       date: DataTypes.DATE,
-      meetingLocation: {
-        type: DataTypes.GEOMETRY,
-        get() {
-          const rawValue = this.getDataValue("meetingLocation");
-          return rawValue ? rawValue.coordinates : null;
-        },
-      },
+      meetingLocation: DataTypes.STRING,
       meetingName: DataTypes.STRING,
       meetingTime: DataTypes.DATE,
       details: DataTypes.TEXT,
@@ -68,14 +62,6 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       hooks: {
-        beforeCreate: async (event, options) => {
-          if (event && options) {
-            event.setDataValue("meetingLocation", {
-              type: "Point",
-              coordinates: event.getDataValue("meetingLocation"),
-            });
-          }
-        },
         afterCreate: async (event, options) => {
           if (event && options) {
             const { poster } = options;

@@ -27,7 +27,7 @@ const { eventsValidator } = require("../validators/events");
  */
 router.post(
   "/",
-  singleImage,
+  singleImage(true),
   verifyToken,
   permittedRoles(..._ADMIN),
   eventsValidator("create"),
@@ -37,7 +37,7 @@ router.post(
 
 router.patch(
   "/:uid",
-  singleImage,
+  singleImage(false),
   verifyToken,
   permittedRoles(..._ADMIN),
   eventsValidator("update"),
