@@ -3,6 +3,7 @@ const BaseModel = require("./base");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 const { deleteFile } = require("../../helpers/delete-file");
+const moment = require("moment");
 module.exports = (sequelize, DataTypes) => {
   class User extends BaseModel {
     PROTECTED_ATTRIBUTES = [
@@ -58,6 +59,8 @@ module.exports = (sequelize, DataTypes) => {
       isActive: DataTypes.BOOLEAN,
       mobileCountryCode: DataTypes.STRING,
       whatsappCountryCode: DataTypes.STRING,
+      approvedDate: DataTypes.DATE,
+      purgedDate: DataTypes.DATE,
     },
     {
       sequelize,
@@ -124,6 +127,14 @@ module.exports = (sequelize, DataTypes) => {
         beforeUpdate: async (user, options) => {
           if (user && options) {
             const { cars, carUids, password, roles, profilePicture } = options;
+
+            if (user.isActive && !user.approvedDate) {
+              user.setDataValue("approvedDate", moment());
+            }
+
+            if (!user.isActive && !user.purgedDate) {
+              user.setDataValue("purgedDate", moment());
+            }
 
             if (profilePicture) {
               const _oldPicture = await user.getProfilePicture();

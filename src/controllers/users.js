@@ -169,14 +169,16 @@ exports.bulkUpdateUsersStatus = async (req, res, next) => {
     const { isActive } = req.params;
 
     const _count = await User.update(
-      { isActive },
+      {
+        isActive,
+      },
       {
         where: {
           uid: {
             [Op.in]: uids,
           },
         },
-        returning: true,
+        individualHooks: true,
       }
     );
 
