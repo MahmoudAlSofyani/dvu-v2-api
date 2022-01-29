@@ -52,7 +52,7 @@ exports.createAnnouncement = async (req, res, next) => {
     const { title } = req.body;
     const uid = uuidv4();
     let options = {
-      logo: file,
+      poster: file,
       url: title ? generateUrlSlug(title, uid, req, next) : null,
     };
 
@@ -76,7 +76,7 @@ exports.updateAnnouncementByUid = async (req, res, next) => {
     const { title } = req.body;
 
     let options = {
-      logo: file,
+      poster: file,
       individualHooks: true,
       url: title ? generateUrlSlug(title, uid, req, next) : null,
     };

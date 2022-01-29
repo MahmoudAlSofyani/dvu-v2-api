@@ -1,4 +1,5 @@
 "use strict";
+const { deleteFile } = require("../../helpers/delete-file");
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class Announcement extends BaseModel {
@@ -37,16 +38,16 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         beforeCreate: async (announcement, options) => {
           if (announcement && options) {
-            const { logo, url } = options;
+            const { poster, url } = options;
 
             if (url) announcement.setDataValue("url", url);
 
-            if (logo) {
+            if (poster) {
               const _poster = await sequelize.models.File.create({
-                uid: logo.filename,
-                name: logo.originalname,
-                type: logo.mimetype,
-                size: logo.size,
+                uid: poster.filename,
+                name: poster.originalname,
+                type: poster.mimetype,
+                size: poster.size,
               });
 
               if (_poster) announcement.setDataValue("fileId", _poster.id);
@@ -63,8 +64,10 @@ module.exports = (sequelize, DataTypes) => {
             if (poster) {
               const _oldPoster = await announcement.getPoster();
 
-              deleteFile(_oldPoster.uid);
-              await _oldPoster.destroy();
+              if (_oldPoster) {
+                deleteFile(_oldPoster.uid);
+                await _oldPoster.destroy();
+              }
 
               const _newPoster = await sequelize.models.File.create({
                 uid: poster.filename,
