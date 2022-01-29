@@ -123,7 +123,7 @@ exports.deleteEvents = async (req, res, next) => {
 exports.handleMemberRegisterToEvent = async (req, res, next) => {
   try {
     const { user } = req;
-    const { uid } = req.body;
+    const { uid } = req.params;
 
     const _event = await Event.findOne({ where: { uid } });
 

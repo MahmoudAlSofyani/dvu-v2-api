@@ -17,13 +17,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/users/a20d3649-a6d5-43db-ad8e-8fcc3b492e8a",
+									"raw": "{{url}}/users/c2f65c60-45b4-47a0-b53e-32be69d2c7ff",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"users",
-										"a20d3649-a6d5-43db-ad8e-8fcc3b492e8a"
+										"c2f65c60-45b4-47a0-b53e-32be69d2c7ff"
 									]
 								}
 							},
@@ -63,7 +63,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"uids\": [\"a20d3649-a6d5-43db-ad8e-8fcc3b492e8a\"]\n}",
+									"raw": "{\n    \"uids\": [\"4b82111a-fbf8-484e-bcc8-0209d40ba9b2\"]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -71,14 +71,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/users/status/true",
+									"raw": "{{url}}/users/status/false",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"users",
 										"status",
-										"true"
+										"false"
 									]
 								}
 							},
@@ -543,8 +543,54 @@
 								"method": "POST",
 								"header": [],
 								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"Event 1\",\n    \"date\": \"2022-01-20\",\n    \"meetingLocation\": [10, 10],\n    \"meetingTime\": \"2022-01-20 10:30 AM\",\n    \"meetingName\": \"Al Nabooda Sharjah Volkswagen\",\n    \"details\": \"let's do this!\",\n    \"isMajor\": true\n}",
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/Users/mahmoudalsofyani/Documents/IMG_3144.jpeg"
+										},
+										{
+											"key": "name",
+											"value": "Test with image",
+											"type": "text"
+										},
+										{
+											"key": "date",
+											"value": "2022-01-30",
+											"type": "text"
+										},
+										{
+											"key": "meetingLocation",
+											"value": "https://goo.gl/maps/LTwUJtNgwUsjEzVr9",
+											"type": "text"
+										},
+										{
+											"key": "meetingTime",
+											"value": "2022-01-30 06:30",
+											"type": "text"
+										},
+										{
+											"key": "meetingName",
+											"value": "Nabooda",
+											"type": "text"
+										},
+										{
+											"key": "details",
+											"value": "YES",
+											"type": "text"
+										},
+										{
+											"key": "isMajor",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "whatsappLink",
+											"value": "https://www.google.com",
+											"type": "text"
+										}
+									],
 									"options": {
 										"raw": {
 											"language": "json"
@@ -578,13 +624,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/events/b659eefd-56ff-4ff0-91a7-81b2dfe2a392",
+									"raw": "{{url}}/events/a099c2c4-d79c-4e33-a536-0c8b7fef3aa3",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"events",
-										"b659eefd-56ff-4ff0-91a7-81b2dfe2a392"
+										"a099c2c4-d79c-4e33-a536-0c8b7fef3aa3"
 									]
 								}
 							},
@@ -649,14 +695,14 @@
 								"method": "PATCH",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/events/visibility/XXXX",
+									"raw": "{{url}}/events/visibility/61da124d-3a1e-44f8-819c-7e57b7ccb359",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"events",
 										"visibility",
-										"XXXX"
+										"61da124d-3a1e-44f8-819c-7e57b7ccb359"
 									]
 								}
 							},
@@ -673,13 +719,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/events/b659eefd-56ff-4ff0-91a7-81b2dfe2a392",
+									"raw": "{{url}}/events/5b99b194-2b12-4ebf-bd1f-9c0714b345be",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"events",
-										"b659eefd-56ff-4ff0-91a7-81b2dfe2a392"
+										"5b99b194-2b12-4ebf-bd1f-9c0714b345be"
 									]
 								}
 							},
@@ -705,25 +751,17 @@
 						{
 							"name": "Register/Unregister for event",
 							"request": {
-								"method": "POST",
+								"method": "PATCH",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"uid\": \"b659eefd-56ff-4ff0-91a7-81b2dfe2a392\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{url}}/events/status",
+									"raw": "{{url}}/events/register/1d0fec33-bf50-4689-99f8-a6938bee3a54",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"events",
-										"status"
+										"register",
+										"1d0fec33-bf50-4689-99f8-a6938bee3a54"
 									]
 								}
 							},
@@ -777,7 +815,7 @@
 										},
 										{
 											"key": "title",
-											"value": "announcement 1",
+											"value": "announcement  with picture",
 											"type": "default"
 										},
 										{
@@ -810,18 +848,24 @@
 										{
 											"key": "title",
 											"value": "edited announcement",
-											"type": "default"
+											"type": "default",
+											"disabled": true
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/Users/mahmoudalsofyani/Downloads/71Y5kZ9XRkL._AC_SL1500_.jpg"
 										}
 									]
 								},
 								"url": {
-									"raw": "{{url}}/announcements/93f12e6d-fde7-4d60-86cd-34593a61fc9a",
+									"raw": "{{url}}/announcements/d9dc30b0-bc5a-4105-8c36-abb6f84a2995",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"announcements",
-										"93f12e6d-fde7-4d60-86cd-34593a61fc9a"
+										"d9dc30b0-bc5a-4105-8c36-abb6f84a2995"
 									]
 								}
 							},
@@ -860,7 +904,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"filters\": {\n        \"search\": \"\"\n    },\n    \"limit\": 1\n}",
+									"raw": "{\n    \"filters\": {\n        \"search\": \"\"\n    },\n    \"limit\": 100\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -875,6 +919,25 @@
 									"path": [
 										"announcements",
 										"search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Publish/Unpublish Announcements",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/announcements/visibility/74e20922-583b-407f-9f0a-2b1f2607ecee",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"announcements",
+										"visibility",
+										"74e20922-583b-407f-9f0a-2b1f2607ecee"
 									]
 								}
 							},
