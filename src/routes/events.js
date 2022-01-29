@@ -82,8 +82,8 @@ router.get(
   permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
   getAllUpcomingEvents
 );
-router.post(
-  "/status",
+router.patch(
+  "/register/:uid",
   verifyToken,
   permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
   handleMemberRegisterToEvent
