@@ -3,38 +3,48 @@ const { generateResponse, allowedImages } = require("../helpers");
 const { File } = require("../db/models");
 const fs = require("fs");
 
-exports.singleImage = (req, res, next) => {
-  try {
-    const upload = multer({
-      dest: "uploads/",
-      fileFilter: allowedImages,
-    }).single("file");
+exports.singleImage = (isRequired) => {
+  return (req, res, next) => {
+    try {
+      const upload = multer({
+        dest: "uploads/",
+        fileFilter: allowedImages,
+      }).single("file");
 
-    upload(req, res, (err) => {
-      if (req.fileValidationError)
-        generateResponse(req.fileValidationError, req, next, 400);
-      else {
-        const { file } = req;
-        if (req.method === "PATCH" || req.method === "PUT") {
-          if (file) {
-            req.file = file;
-            next();
-          } else {
-            next();
-          }
+      upload(req, res, (err) => {
+        if (req.fileValidationError) {
+          generateResponse(req.fileValidationError, req, next, 400);
         } else {
-          if (file) {
-            req.file = file;
-            next();
+          const { file } = req;
+          if (req.method === "PATCH" || req.method === "PUT") {
+            if (file) {
+              req.file = file;
+              next();
+            } else {
+              next();
+            }
           } else {
-            generateResponse(null, req, next, 400, "general.fileUploadError");
+            if (isRequired) {
+              if (file) {
+                req.file = file;
+                next();
+              } else {
+                generateResponse(
+                  null,
+                  req,
+                  next,
+                  400,
+                  "general.fileUploadError"
+                );
+              }
+            } else next();
           }
         }
-      }
-    });
-  } catch (err) {
-    generateResponse(err, req, next);
-  }
+      });
+    } catch (err) {
+      generateResponse(err, req, next);
+    }
+  };
 };
 
 exports.multipleImage = (req, res, next) => {
