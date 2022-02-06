@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // this.belongsTo(models.Car, { foreignKey: "plateCodeId" });
       this.belongsToMany(models.PlateSource, {
         foreignKey: "plateCodeId",
         through: models.PlateCodePlateSource,
       });
+      this.hasMany(models.Car, { foreignKey: "plateCodeId" });
     }
   }
   PlateCode.init(
