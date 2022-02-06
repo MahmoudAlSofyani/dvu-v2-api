@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("cars", {
+    await queryInterface.createTable("car_makes", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,41 +15,9 @@ module.exports = {
         allowNull: false,
         defaultValue: uuidv4(),
       },
-      model: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      color: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      year: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      plate_code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      plate_number: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      plate_source: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      vin_number: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "users",
-          key: "id",
-        },
       },
       created_at: {
         allowNull: false,
@@ -70,6 +38,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("cars");
+    await queryInterface.dropTable("car_makes");
   },
 };

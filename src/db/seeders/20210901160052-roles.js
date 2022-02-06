@@ -17,32 +17,32 @@ module.exports = {
       [
         {
           id: 1,
-          uid: uuidv4(),
+          uid: "ADMIN",
           name: "Admin",
         },
         {
           id: 2,
-          uid: uuidv4(),
+          uid: "MEMBER",
           name: "Member",
         },
         {
           id: 3,
-          uid: uuidv4(),
+          uid: "PURGED",
           name: "Purged",
         },
         {
           id: 4,
-          uid: uuidv4(),
+          uid: "WOLFSBURG",
           name: "Wolfsburg",
         },
         {
           id: 5,
-          uid: uuidv4(),
+          uid: "SPONSOR",
           name: "Sponsor",
         },
         {
           id: 6,
-          uid: uuidv4(),
+          uid: "LEGACY",
           name: "Legacy Member",
         },
       ],
