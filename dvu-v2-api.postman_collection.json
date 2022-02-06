@@ -590,12 +590,7 @@
 											"value": "https://www.google.com",
 											"type": "text"
 										}
-									],
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
+									]
 								},
 								"url": {
 									"raw": "{{url}}/events",
@@ -1004,6 +999,98 @@
 								"roles"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plates",
+			"item": [
+				{
+					"name": "Get all plate sources",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/plates/sources",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"plates",
+								"sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Plate code by source",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/plates/codes/sharjah",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"plates",
+								"codes",
+								"sharjah"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cars",
+			"item": [
+				{
+					"name": "Get all Car Makes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/cars/makes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cars",
+								"makes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all models by make",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/cars/models/volkswagen",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cars",
+								"models",
+								"volkswagen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all car colors",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}

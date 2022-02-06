@@ -2,6 +2,7 @@
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
   class PlateCodePlateSource extends BaseModel {
+    PROTECTED_ATTRIBUTES = ["id", "PlateCodePlateSource"];
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.PlateCode, { foreignKey: "plateCodeId" });
+      this.belongsTo(models.PlateSource, { foreignKey: "plateSourceId" });
     }
   }
   PlateCodePlateSource.init(
