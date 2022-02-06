@@ -4,23 +4,11 @@ const {
   getAllModelsByMake,
   getAllCarColors,
 } = require("../controllers/cars");
-const { verifyToken, permittedRoles } = require("../middlewares");
-const { _GENERAL } = require("../middlewares/roles");
 const router = express.Router();
 
-router.get("/makes", verifyToken, permittedRoles(..._GENERAL), getAllCarMakes);
-router.get(
-  "/models/:make",
-  verifyToken,
-  permittedRoles(..._GENERAL),
-  getAllModelsByMake
-);
+router.get("/makes", getAllCarMakes);
+router.get("/models/:make", getAllModelsByMake);
 
-router.get(
-  "/colors",
-  verifyToken,
-  permittedRoles(..._GENERAL),
-  getAllCarColors
-);
+router.get("/colors", getAllCarColors);
 
 module.exports = router;
