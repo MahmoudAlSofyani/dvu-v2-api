@@ -54,13 +54,21 @@ exports.searchEvents = async (req, res, next) => {
 exports.createEvent = async (req, res, next) => {
   try {
     const { name } = req.body;
+    const { file } = req;
     const uid = uuidv4();
 
-    const _event = await Event.create({
-      uid,
-      url: generateUrlSlug(name, uid, req, next),
-      ...req.body,
-    });
+    const options = {
+      poster: file,
+    };
+
+    const _event = await Event.create(
+      {
+        uid,
+        url: generateUrlSlug(name, uid, req, next),
+        ...req.body,
+      },
+      options
+    );
     res.status(200).send(_event);
   } catch (err) {
     generateResponse(err, req, next);
@@ -71,12 +79,18 @@ exports.updateEventByUid = async (req, res, next) => {
   try {
     const { uid } = req.params;
     const { name } = req.body;
+    const { file } = req;
+
+    const options = {
+      url: name ? generateUrlSlug(name, uid, req, next) : null,
+      individualHooks: true,
+      poster: file,
+    };
 
     const [count, [_updatedEvent]] = await Event.update(
       { ...req.body },
       {
-        url: name ? generateUrlSlug(name, uid, req, next) : null,
-        individualHooks: true,
+        ...options,
         where: { uid },
       }
     );
@@ -109,7 +123,7 @@ exports.deleteEvents = async (req, res, next) => {
 exports.handleMemberRegisterToEvent = async (req, res, next) => {
   try {
     const { user } = req;
-    const { uid } = req.body;
+    const { uid } = req.params;
 
     const _event = await Event.findOne({ where: { uid } });
 
@@ -133,9 +147,7 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
 
 exports.getAllUpcomingEvents = async (req, res, next) => {
   try {
-    const _events = await Event.scope("upcoming").findAll({
-      include: ["members"],
-    });
+    const _events = await Event.scope("upcoming").findAll();
 
     const _filteredEvents = _.chain(_events)
       .sortBy((_e) => _e.date)
@@ -151,11 +163,13 @@ exports.getEventByUid = async (req, res, next) => {
   try {
     const { uid } = req.params;
 
-    const _event = await Event.scope("full").findOne({
+    const _event = await Event.findOne({
       where: { uid },
     });
 
-    res.status(200).send(_event);
+    res
+      .status(200)
+      .send({ ..._event.toJSON(), poster: await _event.getPoster() });
   } catch (err) {
     generateResponse(err, req, next);
   }

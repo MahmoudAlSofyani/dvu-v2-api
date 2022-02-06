@@ -29,13 +29,13 @@ exports.usersValidator = (action) => {
           .not()
           .isEmpty()
           .isString(),
-        check("whatsApp")
-          .exists()
-          .withMessage("validations.user.whatsApp")
-          .not()
-          .isEmpty()
-          .isString()
-          .optional(),
+        // check("whatsApp")
+        //   .exists()
+        //   .withMessage("validations.user.whatsApp")
+        //   .not()
+        //   .isEmpty()
+        //   .isString()
+        //   .optional(),
         check("password")
           .exists()
           .withMessage("validations.user.password")
@@ -48,13 +48,13 @@ exports.usersValidator = (action) => {
           .not()
           .isEmpty()
           .isString(),
-        check("whatsappCountryCode")
-          .if(check("whatsApp").exists().not().isEmpty())
-          .exists()
-          .withMessage("validations.user.whatsappCountryCode")
-          .not()
-          .isEmpty()
-          .isString(),
+        // check("whatsappCountryCode")
+        //   .if(check("whatsApp").exists().not().isEmpty())
+        //   .exists()
+        //   .withMessage("validations.user.whatsappCountryCode")
+        //   .not()
+        //   .isEmpty()
+        //   .isString(),
       ];
     case "update-user-status":
       return [

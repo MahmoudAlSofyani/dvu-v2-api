@@ -1,14 +1,12 @@
 "use strict";
 const BaseModel = require("./base");
 module.exports = (sequelize, DataTypes) => {
-  class File extends BaseModel {
+  class PlateSource extends BaseModel {
     PROTECTED_ATTRIBUTES = [
       "id",
       "createdAt",
       "updatedAt",
-      "deletedAt",
-      "AdvertisementFile",
-      "PostFile",
+      "PlatCodePlateSource",
     ];
     /**
      * Helper method for defining associations.
@@ -17,29 +15,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-
-      this.hasOne(models.User, { foreignKey: "fileId" });
-      this.hasOne(models.Announcement, { foreignKey: "fileId" });
-      this.belongsToMany(models.Advertisement, {
-        through: models.AdvertisementFile,
-        foreignKey: "fileId",
+      this.belongsToMany(models.PlateCode, {
+        through: models.PlateCodePlateSource,
+        foreignKey: "plateSourceId",
       });
-      this.hasOne(models.Event, { foreignKey: "fileId" });
+      this.hasMany(models.Car, { foreignKey: "plateSourceId" });
     }
   }
-  File.init(
+  PlateSource.init(
     {
       uid: DataTypes.STRING,
       name: DataTypes.STRING,
-      type: DataTypes.STRING,
-      size: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "File",
+      modelName: "PlateSource",
       paranoid: true,
       underscored: true,
+      defaultScope: {
+        order: [["name", "ASC"]],
+      },
     }
   );
-  return File;
+  return PlateSource;
 };

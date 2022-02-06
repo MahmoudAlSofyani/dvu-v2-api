@@ -17,17 +17,23 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, { foreignKey: "userId" });
+      this.belongsTo(models.CarColor, { foreignKey: "carColorId" });
+      this.belongsTo(models.CarModel, { foreignKey: "carModelId" });
+      this.belongsTo(models.CarMake, { foreignKey: "carMakeId" });
+      this.belongsTo(models.PlateCode, { foreignKey: "plateCodeId" });
+      this.belongsTo(models.PlateSource, { foreignKey: "plateSourceId" });
     }
   }
   Car.init(
     {
       uid: DataTypes.STRING,
-      model: DataTypes.STRING,
-      color: DataTypes.STRING,
+      carMakeId: DataTypes.INTEGER,
+      carModelId: DataTypes.INTEGER,
+      carColorId: DataTypes.INTEGER,
       year: DataTypes.STRING,
-      plateCode: DataTypes.STRING,
+      plateCodeId: DataTypes.INTEGER,
       plateNumber: DataTypes.STRING,
-      plateSource: DataTypes.STRING,
+      plateSourceId: DataTypes.INTEGER,
       vinNumber: DataTypes.STRING,
     },
     {

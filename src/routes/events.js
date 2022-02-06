@@ -9,6 +9,7 @@ const {
   getAllUpcomingEvents,
   handleEventVisibility,
 } = require("../controllers/events");
+const { singleImage } = require("../controllers/file");
 const router = express.Router();
 const { verifyToken, permittedRoles } = require("../middlewares/index");
 const { _GENERAL, _ADMIN, _VIP } = require("../middlewares/roles");
@@ -26,6 +27,7 @@ const { eventsValidator } = require("../validators/events");
  */
 router.post(
   "/",
+  singleImage(true),
   verifyToken,
   permittedRoles(..._ADMIN),
   eventsValidator("create"),
@@ -35,6 +37,7 @@ router.post(
 
 router.patch(
   "/:uid",
+  singleImage(false),
   verifyToken,
   permittedRoles(..._ADMIN),
   eventsValidator("update"),
@@ -79,8 +82,8 @@ router.get(
   permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
   getAllUpcomingEvents
 );
-router.post(
-  "/status",
+router.patch(
+  "/register/:uid",
   verifyToken,
   permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
   handleMemberRegisterToEvent

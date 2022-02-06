@@ -1,9 +1,8 @@
 "use strict";
 const { v4: uuidv4 } = require("uuid");
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("announcements", {
+    await queryInterface.createTable("plate_codes", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,25 +14,9 @@ module.exports = {
         allowNull: false,
         defaultValue: uuidv4(),
       },
-      title: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      details: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      url: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      file_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: "files",
-          key: "id",
-        },
       },
       created_at: {
         allowNull: false,
@@ -54,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("announcements");
+    await queryInterface.dropTable("plate_codes");
   },
 };

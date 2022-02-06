@@ -28,7 +28,7 @@ const router = express.Router();
 router.get("/:uid", verifyToken, permittedRoles(..._ADMIN), getUserByUid);
 router.patch(
   "/:uid",
-  singleImage,
+  singleImage(false),
   verifyToken,
   permittedRoles(..._ADMIN),
   usersValidator("update"),
@@ -59,7 +59,7 @@ router.get(
 );
 router.patch(
   "/",
-  singleImage,
+  singleImage(false),
   verifyToken,
   permittedRoles(..._GENERAL, ..._VIP),
   updateUserProfile

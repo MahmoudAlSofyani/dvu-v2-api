@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("events", {
+    await queryInterface.createTable("cars", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,40 +15,65 @@ module.exports = {
         allowNull: false,
         defaultValue: uuidv4(),
       },
-      name: {
+      car_make_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "car_makes",
+          key: "id",
+        },
+      },
+      car_model_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "car_models",
+          key: "id",
+        },
+      },
+      car_color_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "car_colors",
+          key: "id",
+        },
+      },
+      year: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      date: {
-        type: Sequelize.DATE,
+      plate_code_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        references: {
+          model: "plate_codes",
+          key: "id",
+        },
       },
-      meeting_location: {
+      plate_number: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      meeting_name: {
+      plate_source_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "plate_sources",
+          key: "id",
+        },
+      },
+      vin_number: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      meeting_time: {
-        type: Sequelize.DATE,
+      user_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
-      },
-      details: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      is_major: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-      url: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        references: {
+          model: "users",
+          key: "id",
+        },
       },
       created_at: {
         allowNull: false,
@@ -69,6 +94,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("events");
+    await queryInterface.dropTable("cars");
   },
 };
