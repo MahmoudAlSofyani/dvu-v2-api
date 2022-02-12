@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       "updatedAt",
       "deletedAt",
       "fileId",
+      "whatsappLink",
     ];
     /**
      * Helper method for defining associations.
@@ -43,6 +44,8 @@ module.exports = (sequelize, DataTypes) => {
       url: DataTypes.STRING,
       isPublished: DataTypes.BOOLEAN,
       whatsappLink: DataTypes.STRING,
+      deadline: DataTypes.DATE,
+      isOpen: DataTypes.BOOLEAN,
     },
     {
       sequelize,

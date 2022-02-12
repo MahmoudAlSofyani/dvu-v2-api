@@ -251,6 +251,11 @@ module.exports = {
         uid: "SHJ3",
         name: "3",
       },
+      {
+        id: 49,
+        uid: "OTHER",
+        name: "Other",
+      },
     ]);
   },
 

@@ -105,28 +105,60 @@ module.exports = (sequelize, DataTypes) => {
         },
         afterCreate: async (user, options) => {
           if (user && options) {
-            const { cars, carUids } = options;
+            const { car } = options;
 
             const _memberRole = await sequelize.models.Role.findOne({
               where: { name: "MEMBER" },
             });
             if (_memberRole) user.addRole(_memberRole);
 
-            if (cars && cars.length > 0) {
-              await sequelize.models.Car.bulkCreate(
-                cars.map((_car, index) => ({
-                  uid: carUids[index],
-                  userId: user.id,
-                  ..._car,
-                }))
-              );
+            if (car) {
+              const {
+                carMake,
+                carYear,
+                carModel,
+                carColor,
+                plateCode,
+                plateSource,
+                plateNumber,
+                vinNumber,
+              } = car;
+
+              const _carMake = await sequelize.models.CarMake.findOne({
+                where: { uid: carMake },
+              });
+              const _carModel = await sequelize.models.CarModel.findOne({
+                where: { uid: carModel },
+              });
+              const _carColor = await sequelize.models.CarColor.findOne({
+                where: { uid: carColor },
+              });
+              const _plateCode = await sequelize.models.PlateCode.findOne({
+                where: { uid: plateCode },
+              });
+              const _plateSource = await sequelize.models.PlateSource.findOne({
+                where: { uid: plateSource },
+              });
+
+              await sequelize.models.Car.create({
+                carMakeId: _carMake.id,
+                carModelId: _carModel.id,
+                carColorId: _carColor.id,
+                year: carYear,
+                plateSourceId: _plateSource.id,
+                plateCodeId: !_plateCode ? 49 : _plateCode.id,
+                otherPlateCode: !_plateCode ? plateCode : null,
+                vinNumber,
+                plateNumber,
+                userId: user.id,
+              });
             }
           }
           return user;
         },
         beforeUpdate: async (user, options) => {
           if (user && options) {
-            const { cars, carUids, password, roles, profilePicture } = options;
+            const { password, roles, profilePicture } = options;
 
             if (user.isActive && !user.approvedDate) {
               user.setDataValue("approvedDate", moment());
@@ -166,16 +198,6 @@ module.exports = (sequelize, DataTypes) => {
               });
 
               await user.setRoles(_roles);
-            }
-
-            if (cars && cars.length > 0) {
-              await sequelize.models.Car.bulkCreate(
-                cars.map((_car, index) => ({
-                  uid: carUids[index],
-                  userId: user.id,
-                  ..._car,
-                }))
-              );
             }
 
             if (password) {

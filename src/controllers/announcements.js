@@ -120,7 +120,9 @@ exports.deleteAnnouncements = async (req, res, next) => {
 
 exports.getAllAnnouncements = async (req, res, next) => {
   try {
-    const _announcements = await Announcement.scope("full").findAll();
+    const _announcements = await Announcement.scope("full").findAll({
+      where: { isPublished: true },
+    });
 
     res.status(200).send(_announcements);
   } catch (err) {

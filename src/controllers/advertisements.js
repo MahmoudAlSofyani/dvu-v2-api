@@ -88,7 +88,22 @@ exports.getAdvertismentByUid = async (req, res, next) => {
 
     const _advertisement = await Advertisement.findOne({ where: { uid } });
 
-    if (_advertisement) return res.status(200).send(_advertisement);
+    if (_advertisement)
+      return res.status(200).send({
+        ..._advertisement.toJSON(),
+        images: await _advertisement.getImages(),
+        user: await _advertisement.getUser({
+          attributes: [
+            "uid",
+            "firstName",
+            "lastName",
+            "mobile",
+            "whatsApp",
+            "mobileCountryCode",
+            "whatsappCountryCode",
+          ],
+        }),
+      });
     else
       generateResponse(
         null,
@@ -171,6 +186,20 @@ exports.deleteAdvertisement = async (req, res, next) => {
       },
     });
     res.status(200).send({ count: _count });
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.getUserAdvertisements = async (req, res, next) => {
+  try {
+    const { user } = req;
+
+    return res.status(200).send({
+      advertisements: await user.getAdvertisements({
+        include: ["images"],
+      }),
+    });
   } catch (err) {
     generateResponse(err, req, next);
   }
