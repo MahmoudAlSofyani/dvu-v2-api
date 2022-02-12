@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       "updatedAt",
       "deletedAt",
       "fileId",
+      "whatsappLink",
     ];
     /**
      * Helper method for defining associations.

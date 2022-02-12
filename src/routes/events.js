@@ -8,6 +8,7 @@ const {
   getEventByUid,
   getAllUpcomingEvents,
   handleEventVisibility,
+  checkIfUserIsRegisteredForEvent,
 } = require("../controllers/events");
 const { singleImage } = require("../controllers/file");
 const router = express.Router();
@@ -87,6 +88,13 @@ router.patch(
   verifyToken,
   permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
   handleMemberRegisterToEvent
+);
+
+router.get(
+  "/status/:uid",
+  verifyToken,
+  permittedRoles(..._GENERAL, ..._ADMIN, ..._VIP),
+  checkIfUserIsRegisteredForEvent
 );
 
 module.exports = router;

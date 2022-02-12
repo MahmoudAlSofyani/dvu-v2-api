@@ -51,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         isVerified: {
           where: {
             isVerified: true,
+            isSold: false,
           },
           include: [
             "images",
