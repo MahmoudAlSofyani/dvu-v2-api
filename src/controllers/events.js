@@ -147,7 +147,9 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
 
 exports.getAllUpcomingEvents = async (req, res, next) => {
   try {
-    const _events = await Event.scope("upcoming").findAll();
+    const _events = await Event.scope("upcoming").findAll({
+      where: { isPublished: true },
+    });
 
     const _filteredEvents = _.chain(_events)
       .sortBy((_e) => _e.date)
@@ -166,6 +168,9 @@ exports.getEventByUid = async (req, res, next) => {
     const _event = await Event.findOne({
       where: { uid },
     });
+
+    if (!_event)
+      generateResponse(null, req, next, 404, "validations.event.notFound");
 
     res
       .status(200)
@@ -186,6 +191,28 @@ exports.handleEventVisibility = async (req, res, next) => {
       await _event.save();
       return res.status(200).send(_event);
     } else generateResponse(null, req, next, 404, "validations.event.notFound");
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
+
+exports.checkIfUserIsRegisteredForEvent = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+    const { user } = req;
+
+    const _event = await Event.findOne({ where: { uid } });
+
+    if (!_event)
+      return generateResponse(
+        null,
+        req,
+        next,
+        404,
+        "validations.event.notFound"
+      );
+
+    return res.status(200).send({ isRegistered: await user.hasEvents(_event) });
   } catch (err) {
     generateResponse(err, req, next);
   }

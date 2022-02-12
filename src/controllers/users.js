@@ -133,14 +133,35 @@ exports.deleteUserProfile = async (req, res, next) => {
 
 exports.createUser = async (req, res, next) => {
   try {
-    const { password, email, mobile, whatsApp, cars } = req.body;
+    const {
+      password,
+      email,
+      mobile,
+      whatsApp,
+      carMake,
+      carYear,
+      carModel,
+      carColor,
+      plateCode,
+      plateSource,
+      plateNumber,
+      vinNumber,
+    } = req.body;
 
     const options = {
       password,
       email,
       mobile,
-      cars,
-      carUids: cars && cars.length > 0 && cars.map((_car) => uuidv4()),
+      car: {
+        carMake,
+        carYear,
+        carModel,
+        carColor,
+        plateCode,
+        plateSource,
+        plateNumber,
+        vinNumber,
+      },
     };
 
     if (await isUniqueUser(email, mobile, whatsApp)) {

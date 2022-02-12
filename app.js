@@ -27,6 +27,8 @@ const announcementsRouter = require("./src/routes/announcements");
 const advertisementsRouter = require("./src/routes/advertisements");
 const filesRouter = require("./src/routes/files");
 const rolesRouter = require("./src/routes/roles");
+const platesRouter = require("./src/routes/plates");
+const carsRouter = require("./src/routes/cars");
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -101,6 +103,8 @@ app.use("/api/announcements", announcementsRouter);
 app.use("/api/advertisements", advertisementsRouter);
 app.use("/api/files", filesRouter);
 app.use("/api/roles", rolesRouter);
+app.use("/api/plates", platesRouter);
+app.use("/api/cars", carsRouter);
 
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");

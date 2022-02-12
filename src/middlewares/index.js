@@ -9,7 +9,9 @@ exports.permittedRoles = (...roles) => {
 
     if (
       user &&
-      user.roles.some((_role) => roles.includes(_role.name.toUpperCase()))
+      user.roles.some(
+        (_role) => roles.includes(_role.uid.toUpperCase()) && user.isActive
+      )
     )
       next();
     else generateResponse(null, req, next, 403, "general.forbidden");
@@ -30,7 +32,11 @@ exports.verifyToken = (req, res, next) => {
             where: { uid },
             include: ["roles"],
           });
-          if (_user && _user.roles.some((_role) => _role.name !== "PURGED")) {
+          if (
+            _user &&
+            _user.roles.some((_role) => _role.uid !== "PURGED") &&
+            _user.isActive
+          ) {
             req.user = _user;
             next();
           } else generateResponse(null, req, next, 401, "general.denied");

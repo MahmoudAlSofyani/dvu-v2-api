@@ -8,6 +8,7 @@ const {
   getAllVerifiedAdvertisments,
   getAdvertismentByUid,
   markAdvertismentAsSold,
+  getUserAdvertisements,
 } = require("../controllers/advertisements");
 const { verifyToken, permittedRoles } = require("../middlewares/index");
 const router = express.Router();
@@ -47,6 +48,13 @@ router.delete(
  * POST Create advertisment                    [*]
  * PATCH Mark as sold                          [*]
  */
+
+router.get(
+  "/user",
+  verifyToken,
+  permittedRoles(..._GENERAL, ..._VIP, ..._ADMIN),
+  getUserAdvertisements
+);
 
 router.get(
   "/:uid",

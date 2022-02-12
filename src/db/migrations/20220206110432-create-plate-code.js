@@ -1,7 +1,8 @@
 "use strict";
+const { v4: uuidv4 } = require("uuid");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("password_reset_tokens", {
+    await queryInterface.createTable("plate_codes", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,22 +12,11 @@ module.exports = {
       uid: {
         type: Sequelize.STRING,
         allowNull: false,
+        defaultValue: uuidv4(),
       },
-      token: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      token_expiry: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "users",
-          key: "id",
-        },
       },
       created_at: {
         allowNull: false,
@@ -41,6 +31,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("password_reset_tokens");
+    await queryInterface.dropTable("plate_codes");
   },
 };
