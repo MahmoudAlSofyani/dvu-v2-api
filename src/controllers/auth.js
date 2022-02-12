@@ -3,6 +3,7 @@ const { User, PasswordResetToken } = require("../db/models");
 const bcrypt = require("bcrypt");
 const { generateResponse, isActiveAccount } = require("../helpers");
 const moment = require("moment");
+const logger = require("morgan");
 
 //Login route, used to verify credentials sent and generate a token
 
@@ -29,6 +30,10 @@ exports.login = async (req, res, next) => {
         );
 
         if (token) {
+          logger.token("remote-user", () => {
+            return _user.uid;
+          });
+
           res.status(200).send({
             token,
             user: { ..._user.toJSON(), roles: await _user.getRoles() },

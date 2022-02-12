@@ -8,6 +8,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const rfs = require("rotating-file-stream");
 
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
@@ -69,11 +70,26 @@ app.use(startPolyglot);
 app.use(helmet());
 app.use(cors());
 app.use(compression());
+
+var logToFile = rfs.createStream(`${new Date().toISOString()}.log`, {
+  interval: "1d",
+  path: path.join(__dirname, "logs"),
+});
+
+logger.token("error", () => {
+  return null;
+});
+
 app.use(
-  logger(process.env.NODE_ENV === "development" ? "dev" : "combined", {
-    skip: (req, res) => process.env.NODE_ENV === "test",
-  })
+  logger(
+    `:date[iso] :method url=:url user=:remote-user user_ip=:remote-addr status=:status user_agent=:user-agent error=:error`,
+    {
+      stream: logToFile,
+    }
+  )
 );
+
+app.use(limiter);
 
 // default content-type: application/json | text/html
 app.use(function (req, res, next) {
