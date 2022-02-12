@@ -23,7 +23,7 @@ exports.en = {
       lastName: "Last name required",
       mobile: "Mobile required",
     },
-    advertisment: {
+    advertisement: {
       notFound: "Advertisment not found",
       title: "Title required",
       price: "Price required",
