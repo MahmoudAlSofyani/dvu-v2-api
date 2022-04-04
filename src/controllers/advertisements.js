@@ -204,3 +204,26 @@ exports.getUserAdvertisements = async (req, res, next) => {
     generateResponse(err, req, next);
   }
 };
+
+exports.handleAdvertisementVisibility = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const _advertisement = await Advertisement.findOne({ where: { uid } });
+
+    if (_advertisement) {
+      _advertisement.isVerified = !_advertisement.isVerified;
+      await _advertisement.save();
+      return res.status(200).send(_advertisement);
+    } else
+      generateResponse(
+        null,
+        req,
+        next,
+        404,
+        "validations.advertisement.notFound"
+      );
+  } catch (err) {
+    generateResponse(err, req, next);
+  }
+};
