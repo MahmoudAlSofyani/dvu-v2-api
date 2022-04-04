@@ -29,6 +29,7 @@ module.exports = {
           is_active: true,
           mobile_country_code: "971",
           whatsapp_country_code: "971",
+          is_approved: true,
         },
         {
           id: 2,
@@ -41,6 +42,7 @@ module.exports = {
           points: 100,
           is_active: true,
           mobile_country_code: "971",
+          is_approved: true,
         },
       ],
       {

@@ -1,6 +1,7 @@
 const { User } = require("../db/models");
 const { Op } = require("sequelize");
 const generator = require("generate-password");
+const logger = require("morgan");
 
 exports.isUniqueUser = async (email, mobile, whatsApp) => {
   const count = await User.count({
@@ -36,6 +37,9 @@ exports.generateResponse = (
   error.message = req.polyglot.t(msg || "general.error");
   error.stack = err || null;
   error.data = data;
+  logger.token("error", () => {
+    return error.message;
+  });
   next(error);
 };
 

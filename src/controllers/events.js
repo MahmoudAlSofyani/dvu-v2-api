@@ -25,7 +25,7 @@ exports.searchEvents = async (req, res, next) => {
                     url: { [Op.like]: `%${value}%` },
                   },
                   {
-                    description: { [Op.like]: `%${value}%` },
+                    details: { [Op.like]: `%${value}%` },
                   },
                 ],
               };
@@ -128,6 +128,15 @@ exports.handleMemberRegisterToEvent = async (req, res, next) => {
     const _event = await Event.findOne({ where: { uid } });
 
     if (_event) {
+      if (!_event.isOpen)
+        return generateResponse(
+          null,
+          req,
+          next,
+          400,
+          "validations.event.closed"
+        );
+
       if (await _event.hasMember(user)) {
         await _event.removeMember(user);
         return res
@@ -215,5 +224,16 @@ exports.checkIfUserIsRegisteredForEvent = async (req, res, next) => {
     return res.status(200).send({ isRegistered: await user.hasEvents(_event) });
   } catch (err) {
     generateResponse(err, req, next);
+  }
+};
+
+exports.getUserEvents = async (req, res, next) => {
+  try {
+    const { user } = req;
+
+    const _events = await user.getEvents({ include: ["poster"] });
+    return res.status(200).send(_events);
+  } catch (err) {
+    generateResponse(err);
   }
 };

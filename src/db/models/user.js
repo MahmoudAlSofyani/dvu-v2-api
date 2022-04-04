@@ -61,6 +61,15 @@ module.exports = (sequelize, DataTypes) => {
       whatsappCountryCode: DataTypes.STRING,
       approvedDate: DataTypes.DATE,
       purgedDate: DataTypes.DATE,
+      isApproved: DataTypes.BOOLEAN,
+      fullName: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          const firstName = this.getDataValue("firstName");
+          const lastName = this.getDataValue("lastName");
+          return [firstName, lastName].join(" ").trim();
+        },
+      },
     },
     {
       sequelize,
@@ -162,10 +171,17 @@ module.exports = (sequelize, DataTypes) => {
 
             if (user.isActive && !user.approvedDate) {
               user.setDataValue("approvedDate", moment());
+              user.setDataValue("isApproved", true);
             }
 
-            if (!user.isActive && !user.purgedDate) {
+            if (!user.isApproved) {
               user.setDataValue("purgedDate", moment());
+              user.setDataValue("isActive", false);
+              const _purgedRole = await sequelize.models.Role.findAll({
+                where: { uid: "PURGED" },
+              });
+              await user.setRoles([]);
+              await user.addRole(_purgedRole);
             }
 
             if (profilePicture) {

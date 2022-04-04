@@ -9,6 +9,7 @@ const {
   getAdvertismentByUid,
   markAdvertismentAsSold,
   getUserAdvertisements,
+  handleAdvertisementVisibility,
 } = require("../controllers/advertisements");
 const { verifyToken, permittedRoles } = require("../middlewares/index");
 const router = express.Router();
@@ -38,6 +39,13 @@ router.delete(
   advertisementsValidator("delete"),
   processValidationError,
   deleteAdvertisement
+);
+
+router.patch(
+  "/visibility/:uid",
+  verifyToken,
+  permittedRoles(..._ADMIN),
+  handleAdvertisementVisibility
 );
 
 // AUTHENTICATED ACCESS ROUTES

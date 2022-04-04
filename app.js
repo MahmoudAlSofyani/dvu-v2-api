@@ -8,6 +8,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const rfs = require("rotating-file-stream");
 
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
@@ -29,6 +30,7 @@ const filesRouter = require("./src/routes/files");
 const rolesRouter = require("./src/routes/roles");
 const platesRouter = require("./src/routes/plates");
 const carsRouter = require("./src/routes/cars");
+const dashboardRouter = require("./src/routes/dashboard");
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -69,11 +71,24 @@ app.use(startPolyglot);
 app.use(helmet());
 app.use(cors());
 app.use(compression());
+
+var logToFile = rfs.createStream(`${new Date().toISOString()}.log`, {
+  interval: "1d",
+  path: path.join(__dirname, "logs"),
+});
+
 app.use(
-  logger(process.env.NODE_ENV === "development" ? "dev" : "combined", {
-    skip: (req, res) => process.env.NODE_ENV === "test",
-  })
+  logger(
+    process.env.NODE_ENV === "production"
+      ? ":date[iso] :method url=:url user=:remote-user user_ip=:remote-addr status=:status user_agent=:user-agent"
+      : ":date[iso] :method url=:url status=:status user_agent=:user-agent",
+    {
+      stream: process.env.NODE_ENV === "production" ? logToFile : null,
+    }
+  )
 );
+
+process.env.NODE_ENV === "production" && app.use(limiter);
 
 // default content-type: application/json | text/html
 app.use(function (req, res, next) {
@@ -105,6 +120,7 @@ app.use("/api/files", filesRouter);
 app.use("/api/roles", rolesRouter);
 app.use("/api/plates", platesRouter);
 app.use("/api/cars", carsRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");

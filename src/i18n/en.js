@@ -11,6 +11,7 @@ exports.en = {
       notUnique: "User already exists",
       mobileCountryCode: "Country code required",
       whatsappCountryCode: "Country code required",
+      isActive: "Please choose user status",
     },
     auth: {
       email: "Email required",
@@ -18,9 +19,34 @@ exports.en = {
       expiredToken: "Email expired. Please request a new one",
       newPassword: "New password is required",
       passwordMismatch: "Invalid old password",
+      firstName: "First name required",
+      lastName: "Last name required",
+      mobile: "Mobile required",
     },
-    advertisment: {
+    advertisement: {
       notFound: "Advertisment not found",
+      title: "Title required",
+      price: "Price required",
+      description: "Description required",
+    },
+    announcement: {
+      notFound: "Announcement not found",
+      title: "Title required",
+      details: "Details required",
+    },
+    car: {
+      notOwn: "Car belongs to another user",
+      notFound: "Car not found",
+    },
+    event: {
+      notFound: "Event not found",
+      name: "Name is required",
+      date: "Date required",
+      meetingLocation: "Meeting location required",
+      meetingTime: "Meeting time required",
+      meetingName: "Meeting name required",
+      details: "Details required",
+      isMajor: "Please choose event type",
     },
   },
   general: {
